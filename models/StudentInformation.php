@@ -3,11 +3,14 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "student_information".
  *
  * @property integer $id
+ * @property string $title
  * @property string $firstName
  * @property string $middleName
  * @property string $lastName
@@ -45,7 +48,8 @@ class StudentInformation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['firstName', 'lastName', 'street', 'barangay'], 'required'],
+            [['title','firstName', 'lastName', 'street', 'barangay'], 'required'],
+            [['emailAddress'], 'email'],
             [['birthday', 'created_at', 'updated_at'], 'safe'],
             [['firstName', 'middleName', 'lastName', 'phoneNumber', 'houseNumber', 'street', 'barangay', 'postalCode', 'city', 'province', 'country', 'emailAddress', 'height', 'weight', 'bloodType', 'elementary_graduated', 'highschool_graduated'], 'string', 'max' => 255],
         ];
@@ -58,6 +62,7 @@ class StudentInformation extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'title' => 'Title',
             'firstName' => 'First Name',
             'middleName' => 'Middle Name',
             'lastName' => 'Last Name',
@@ -78,6 +83,17 @@ class StudentInformation extends \yii\db\ActiveRecord
             'highschool_graduated' => 'Highschool Graduated',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+        ];
+    }
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'value'=>new Expression('NOW()')
+            ],
         ];
     }
 }

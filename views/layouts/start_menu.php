@@ -38,18 +38,18 @@ use app\assets\AppAsset;
               ['label' => 'Home', 'url' => ['/site/index']],
               ['label' => 'Enroll', 'url' => ['/enroll']],
               // ['label' => 'Contact', 'url' => ['/site/contact']],
-              // Yii::$app->user->isGuest ? (
-              //     ['label' => 'Login', 'url' => ['/site/login']]
-              // ) : (
-              //     '<li>'
-              //     . Html::beginForm(['/site/logout'], 'post', ['class' => 'navbar-form'])
-              //     . Html::submitButton(
-              //         'Logout (' . Yii::$app->user->identity->username . ')',
-              //         ['class' => 'btn btn-link']
-              //     )
-              //     . Html::endForm()
-              //     . '</li>'
-              // )
+              Yii::$app->user->isGuest ? (
+                  ['label' => 'Login', 'url' => ['/login']]
+              ) : (
+                  '<li>'
+                  . Html::beginForm(['/logout'], 'post', ['class' => 'navbar-form'])
+                  . Html::submitButton(
+                      'Logout (' . Yii::$app->user->identity->username . ')',
+                      ['class' => 'btn btn-link']
+                  )
+                  . Html::endForm()
+                  . '</li>'
+              )
           ],
       ]);
       NavBar::end();

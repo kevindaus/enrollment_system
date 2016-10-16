@@ -38,15 +38,35 @@ COOKIE_VALIDATION_KEY=
 CONFIGURATION
 ------------
 
+* Coourse management for admin
+	create table 
+		WYSWIG for description
+		WYSWIG for course_outline
+	create CURUD
 
-User account management 
+*Register User
+	include pictures too?
 
-Registered student management
+*Manage achievements
 
-Registered student chart
-
-After registration show 
+*After registration show 
 courses page
+
+* Manage Registered student management
+
+
+* Reports for dashboard panel
+	number of male vs female
+	map out achievers
+	high school from pie cart
+	cousrse distribution
+	list of valedictorians
+	list of salutatorian
+	list of varsity students
+
+
+
+
 
 
 

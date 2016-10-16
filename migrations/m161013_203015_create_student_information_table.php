@@ -20,11 +20,13 @@ class m161013_203015_create_student_information_table extends Migration
         }
         $this->createTable('{{%student_information}}', [
             'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
             'firstName' => $this->string()->notNull(),
             'middleName' => $this->string(),
             'lastName' => $this->string()->notNull(),
             'phoneNumber' => $this->string(),
             'houseNumber' => $this->string(),
+            'gender' => $this->string()->notNull(),
             'street' => $this->string()->notNull(),
             'barangay' => $this->string()->notNull(),
             'postalCode' => $this->string(),

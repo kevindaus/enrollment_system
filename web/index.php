@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * admin
+ * y14gK38T6JAb7cH
+ */
 
 error_reporting(E_ALL);
 ini_set("display_errors", true);

@@ -8,14 +8,24 @@
 
 namespace app\controllers;
 
-
+use Yii;
 use yii\web\Controller;
+use \app\models\StudentInformation;
 
 class EnrollController extends Controller{
     public function actionIndex()
     {
-        //show enrollment form here
-        return $this->render('index');
+		$model = new \app\models\StudentInformation();
+	    if ($model->load(Yii::$app->request->post())) {
+	        if ($model->validate()) {
+	        	if ($model->save()) {
+		        	Yii::$app->session->setFlash("success", "<strong>Success!</strong> You have succesfully registered. Thank you for enrolling at ".\Yii::$app->params['university_name']);
+					$model = new \app\models\StudentInformation();
+	        		// $this->redirect("/enroll");
+	        	}
+	        }
+	    }
+        return $this->render('index',compact('model'));
     }
 
 } 
