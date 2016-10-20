@@ -9,47 +9,50 @@
 namespace app\controllers;
 
 use Yii;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use \app\models\StudentInformation;
 use yii\data\ActiveDataProvider;
 use \app\models\Course;
+use \app\models\EducationalAttainment;
 
 class EnrollController extends Controller{
     public function actionIndex()
     {
-		$model = new \app\models\StudentInformation();
-		$query = new \yii\db\Query();
-		$allAchievements = $query->select('*')
-			->from('achievement')
-			->all();
-		$courseQuery = Course::find();
-		$courseQuery->limit = 5;
-		$allCourse = new ActiveDataProvider([
-			    'query' => $courseQuery,
-			    'pagination' => [
-			        'pageSize' => 20,
-			    ],
-			]);
+		$newStudent = new \app\models\StudentInformation();
+	    $allAchievements = $this->getAllAchievements();
+	    /*course preferences */
+	    
 
-	    if ($model->load(Yii::$app->request->post())) {
-	        if ($model->validate()) {
-	        	$model->birthday = date("Y-m-d H:i:s",strtotime($model->birthday));
-	        	if ($model->save()) {
-	        		//@TODO - not saving WTF?!
-	        		/*@todo - save student course*/
-	        		/*@todo - save student achievement */
-		        	Yii::$app->session->setFlash("success", "<strong>Success!</strong> You have succesfully registered. Thank you for enrolling at ".\Yii::$app->params['university_name']);
-					$model = new \app\models\StudentInformation();
-	        		// $this->redirect("/enroll");
-	        	}
-	        }
-	    }
+	    /*educational attainment*/
+	    $elementaryEducationalAttainment = new EducationalAttainment(['education'=>'Elementary']);
+	    $secondaryEducationalAttainment = new EducationalAttainment(['education'=>'Secondary']);
+	    $vocationalEducationalAttainment = new EducationalAttainment(['education'=>'Vocational']);
+	    $tertiaryEducationalAttainment = new EducationalAttainment(['education'=>'Tertiary']);
+
+	    /*@TODO - register the new student*/
+
+
+        return $this->render('index',compact(
+	        	'newStudent',
+	        	'allAchievements',
+	        	'elementaryEducationalAttainment',
+	        	'secondaryEducationalAttainment',
+	        	'vocationalEducationalAttainment',
+	        	'tertiaryEducationalAttainment'
+        	));
+    }
+    protected function getAllAchievements()
+    {
+		$query = new \yii\db\Query();		
+		$allAchievements = $query->select('*')
+			->from('awards_received')
+			->all();
 	    $tempContainer = [];
 	    foreach ($allAchievements as $currentAchievementRow) {
 	    	$tempContainer[] = $currentAchievementRow['name'];
 	    }
-	    $allAchievements = $tempContainer;
-        return $this->render('index',compact('model','allCourse','allAchievements'));
+    	return $tempContainer;
     }
 
 } 

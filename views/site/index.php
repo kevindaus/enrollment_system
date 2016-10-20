@@ -12,7 +12,7 @@ $this->title = 'Welcome';
   <!-- Start Slider -->
   <section id="mu-slider">
     <!-- Start single slider item -->
-    <div class="mu-slider-single">
+    <div class="mu-slider-single" style="width: 1349px;height: 500px;overflow-y: hidden;">
       <div class="mu-slider-img">
         <figure>
           <img src="assets/img/slider/1.jpg" alt="img">
@@ -107,7 +107,7 @@ $this->title = 'Welcome';
 
 
   <!-- Start latest course section -->
-  <section id="mu-latest-courses">
+  <section id="mu-latest-courses" class="hidden">
     <div class="container">
       <div class="row">
         <div class="col-lg-12 col-md-12">

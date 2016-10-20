@@ -5,19 +5,19 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "course".
+ * This is the model class for table "awards_received".
  *
  * @property integer $id
- * @property string $course_name
+ * @property string $awards_name
  */
-class Course extends \yii\db\ActiveRecord
+class AwardsReceived extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'course';
+        return 'awards_received';
     }
 
     /**
@@ -26,7 +26,7 @@ class Course extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['course_name'], 'string', 'max' => 255],
+            [['awards_name'], 'string', 'max' => 255],
         ];
     }
 
@@ -37,7 +37,7 @@ class Course extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'course_name' => 'Course Name',
+            'awards_name' => 'Awards Name',
         ];
     }
 }

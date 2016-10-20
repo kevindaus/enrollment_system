@@ -342,10 +342,11 @@ img {
   position: relative;
 }
 #mu-slider .mu-slider-single .mu-slider-img {
-  display: inline;
-  float: left;
-  width: 100%;
-  height: 500px;
+    display: inline;
+    float: left;
+    width: 100%;
+    position: relative;
+    top: -256px;
 }
 #mu-slider .mu-slider-single .mu-slider-img:after {
   background-color: rgba(0, 0, 0, 0.5);
@@ -414,7 +415,7 @@ img {
 #mu-service {
   display: inline;
   float: left;
-  margin-top: -80px;
+  /*margin-top: 50px;*/
   width: 100%;
 }
 #mu-service .mu-service-area {

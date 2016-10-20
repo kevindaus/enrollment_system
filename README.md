@@ -41,6 +41,10 @@ tables
 ---------
 
 
+student_information
+-------
+id
+
 educational_attainment
 ---------
 id
@@ -80,41 +84,26 @@ accessToken
 
 
 
-NOTES
-------------
 
-student_educational_attainment
-has many awards_received
-
-
-
-awards_receieved
---
-id
-educational_attainment_id
-
-
-educational_attainment8
 
 
 TODO
 ------------
 
-* Course management for admin
-	create table 
-		WYSWIG for description
-		WYSWIG for course_outline
-	create CURUD
+@TODO - allow user to choose atleast 3 course 
+1 preference
+2 preference
+3 preference
+
 
 *Register User
-	include pictures too?
-
-*Manage achievements
-
-*After registration show 
-courses page
+	include camera picture
+	include signature panel at the bottom
 
 * Manage Registered student management
+
+* After registration show 
+success message only
 
 
 * Reports for dashboard panel
@@ -126,10 +115,6 @@ courses page
 	list of salutatorian
 	list of varsity students
 
-@TODO - allow user to choose atleast 3 course 
-1 preference
-2 preference
-3 preference
 
 
 @TODO - order of form field

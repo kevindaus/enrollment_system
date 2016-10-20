@@ -1,4 +1,9 @@
 <?php
+/* @var $this yii\web\View */
+/* @var $newStudent app\models\StudentInformation */
+/* @var $form ActiveForm */
+/* @var $allAchievements array */
+
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -6,33 +11,39 @@ use kartik\date\DatePicker;
 use yii\helpers\ArrayHelper;
 use app\models\Course;
 use kartik\widgets\Select2;
-
-/* @var $this yii\web\View */
-/* @var $model app\models\StudentInformation */
-/* @var $form ActiveForm */
-/* @var $allAchievements array */
+use kartik\tabs\TabsX;
+use yii\helpers\Url;
 
 
 ?>
 
+
 <div class="enrollment-form">
     <?php $form = ActiveForm::begin(); ?>
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h3 class="panel-title"></h3>
+            </div>
+            <div class="panel-body">
+                <?= Html::errorSummary($newStudent); ?>
+            </div>
+        </div>
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h3 class="panel-title">Personal Information</h3>
             </div>
             <div class="panel-body">
-                <?= $form->field($model, 'title')->dropDownList([
+                <?= $form->field($newStudent, 'title')->dropDownList([
                     'Mr'=>'Mr',
                     'Mrs'=>'Mrs',
                     'Ms'=>'Ms',
                 ]); ?>
-                <?= $form->field($model, 'firstName') ?>
-                <?= $form->field($model, 'middleName') ?>
-                <?= $form->field($model, 'lastName') ?>
+                <?= $form->field($newStudent, 'firstName') ?>
+                <?= $form->field($newStudent, 'middleName') ?>
+                <?= $form->field($newStudent, 'lastName') ?>
                 <?= 
                     $form
-                    ->field($model, 'birthday')
+                    ->field($newStudent, 'birthday')
                     ->widget(DatePicker::classname(), [
                         'options' => ['placeholder' => 'Enter birth date ...'],
                         'pluginOptions' => [
@@ -45,95 +56,99 @@ use kartik\widgets\Select2;
         </div>
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h3 class="panel-title">Contact Information</h3>
+                <h3 class="panel-title">Permanent Address</h3>
             </div>
             <div class="panel-body">
-                <?= $form->field($model, 'emailAddress') ?>
-                <?= $form->field($model, 'phoneNumber') ?>
+                <?= $form->field($newStudent, 'permanent_address_house_number')->hint("e.g #018") ?>
+                <?= $form->field($newStudent, 'permanent_address_street')->hint("e.g Gaddang Street") ?>
+                <?= $form->field($newStudent, 'permanent_address_purok')->hint("e.g Purok Tres") ?>
+                <?= $form->field($newStudent, 'permanent_address_barangay')->hint("e.g Barangay Roxas") ?>
+                <?= $form->field($newStudent, 'permanent_address_town')->hint("e.g Solano") ?>
+                <?= $form->field($newStudent, 'permanent_address_province')->hint("e.g Nueva Vizcaya") ?>
+                <?= $form->field($newStudent, 'permanent_address_postalCode')->hint("e.g Philippines") ?>
             </div>
         </div>
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h3 class="panel-title">Address Information</h3>
+                <h3 class="panel-title">Residential Address</h3>
             </div>
             <div class="panel-body">
-                <?= $form->field($model, 'houseNumber')->hint("e.g #018") ?>
-                <?= $form->field($model, 'street')->hint("e.g Gaddang Street") ?>
-                <?= $form->field($model, 'barangay')->hint("e.g Quirino") ?>
-                <?= $form->field($model, 'postalCode')->hint("e.g 3709") ?>
-                <?= $form->field($model, 'city')->label("City (optional)") ?>
-                <?= $form->field($model, 'province')->hint("e.g Nueva Vizcaya") ?>
-                <?= $form->field($model, 'country')->hint("e.g Philippines") ?>
+                <?= $form->field($newStudent, 'residential_address_house_number')->hint("e.g #018") ?>
+                <?= $form->field($newStudent, 'residential_address_street')->hint("e.g Gaddang Street") ?>
+                <?= $form->field($newStudent, 'residential_address_purok')->hint("e.g Purok Tres") ?>
+                <?= $form->field($newStudent, 'residential_address_barangay')->hint("e.g Barangay Roxas") ?>
+                <?= $form->field($newStudent, 'residential_address_town')->hint("e.g Solano") ?>
+                <?= $form->field($newStudent, 'residential_address_province')->hint("e.g Nueva Vizcaya") ?>
+                <?= $form->field($newStudent, 'residential_address_postalCode')->hint("e.g Philippines") ?>
             </div>
         </div>
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h3 class="panel-title">Other Information</h3>
+                <h3 class="panel-title">Educational Attainment </h3>
             </div>
             <div class="panel-body">
-                <?= $form->field($model, 'height') ?>
-                <?= $form->field($model, 'weight') ?>
-                <?= 
-                $form
-                ->field($model, 'bloodType') 
-                ->radioList([
-                    'A'=>'A',
-                    'B'=>'B',
-                    'AB'=>'AB',
-                    'O'=>'O',
-                ]);
-                ?>
-            </div>
-        </div>
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title">Education </h3>
-            </div>
-            <div class="panel-body">
-                <?= $form->field($model, 'elementary_graduated') ?>
-                <?= $form->field($model, 'highschool_graduated') ?>
-            </div>
-        </div>
+            <?php $this->beginBlock('elementary') ?>
+                <?= $form->field($elementaryEducationalAttainment, 'education')->textInput(['disabled' => 'disabled'])->label('Educational Attainment'); ?>
+                <?= $form->field($elementaryEducationalAttainment, 'name_of_school')->textInput(); ?>
+                <?= $form->field($elementaryEducationalAttainment, 'address_of_school')->textInput(); ?>
+                <?= $form->field($elementaryEducationalAttainment, 'inclusive_dates_of_attendance')->textInput(); ?>
+            <?php $this->endBlock() ?>
 
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title">Course to take</h3>
-            </div>
-            <div class="panel-body">
-                <!-- Course here -->
-                <?= 
-                    Html::dropDownList(
-                            'courseToTake', 
-                            null, 
-                            ArrayHelper::map(Course::find()->all(), 'id', 'name'),
-                            [
-                                'class'=>'form-control'
-                            ]
-                        );
-                ?>
-            </div>
-        </div>
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title">Achievements</h3>
-            </div>
-            <div class="panel-body">
+            <?php $this->beginBlock('secondary') ?>
+                <?= $form->field($secondaryEducationalAttainment, 'education')->textInput(['disabled' => 'disabled'])->label('Educational Attainment'); ?>
+                <?= $form->field($secondaryEducationalAttainment, 'name_of_school')->textInput(); ?>
+                <?= $form->field($secondaryEducationalAttainment, 'address_of_school')->textInput(); ?>
+                <?= $form->field($secondaryEducationalAttainment, 'inclusive_dates_of_attendance')->textInput(); ?>
+            <?php $this->endBlock() ?>
+
+            <?php $this->beginBlock('vocational') ?>
+                <?= $form->field($vocationalEducationalAttainment, 'education')->textInput(['disabled' => 'disabled'])->label('Educational Attainment'); ?>
+                <?= $form->field($vocationalEducationalAttainment, 'name_of_school')->textInput(); ?>
+                <?= $form->field($vocationalEducationalAttainment, 'address_of_school')->textInput(); ?>
+                <?= $form->field($vocationalEducationalAttainment, 'inclusive_dates_of_attendance')->textInput(); ?>
+            <?php $this->endBlock() ?>
+
+            <?php $this->beginBlock('ternary') ?>
+                <?= $form->field($tertiaryEducationalAttainment, 'education')->textInput(['disabled' => 'disabled'])->label('Educational Attainment'); ?>
+                <?= $form->field($tertiaryEducationalAttainment, 'name_of_school')->textInput(); ?>
+                <?= $form->field($tertiaryEducationalAttainment, 'address_of_school')->textInput(); ?>
+                <?= $form->field($tertiaryEducationalAttainment, 'inclusive_dates_of_attendance')->textInput(); ?>
+
+            <?php $this->endBlock() ?>
+
+            <?= Html::errorSummary($elementaryEducationalAttainment); ?>
+            <?= Html::errorSummary($secondaryEducationalAttainment); ?>
+            <?= Html::errorSummary($vocationalEducationalAttainment); ?>
+            <?= Html::errorSummary($tertiaryEducationalAttainment); ?>
             <?= 
-                Select2::widget([
-                    'name' => 'achievements',
-                    'data' => $allAchievements,
-                    // 'data' => [1 => "First", 2 => "Second", 3 => "Third", 4 => "Fourth", 5 => "Fifth"],
-                    'size' => Select2::MEDIUM,
-                    'options' => ['placeholder' => 'Select a state ...', 'multiple' => true],
-                    'pluginOptions' => [
-                        'allowClear' => true
+            TabsX::widget([
+                'items'=>[
+                    [
+                        'label'=>'Elementary',
+                        'content'=>$this->blocks['elementary'],
+                        'active'=>true,
                     ],
-                ]);
-
-
+                    [
+                        'label'=>'Secondary',
+                        'content'=>$this->blocks['secondary'],
+                    ],
+                    [
+                        'label'=>'Vocational',
+                        'content'=>$this->blocks['vocational'],
+                    ],
+                    [
+                        'label'=>'Ternary',
+                        'content'=>$this->blocks['ternary'],
+                    ],
+                ],
+                'position'=>TabsX::POS_LEFT,
+                'encodeLabels'=>false
+            ]); 
             ?>
+
             </div>
         </div>
+
     
         <div class="form-group">
             <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-lg pull-right']) ?>
