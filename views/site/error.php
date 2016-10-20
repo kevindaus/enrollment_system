@@ -8,20 +8,23 @@
 use yii\helpers\Html;
 
 $this->title = $name;
+
 ?>
-<div class="site-error">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <div class="alert alert-danger">
-        <?= nl2br(Html::encode($message)) ?>
+commdn
+<div class="row">
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+        
     </div>
-
-    <p>
-        The above error occurred while the Web server was processing your request.
-    </p>
-    <p>
-        Please contact us if you think this is a server error. Thank you.
-    </p>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <h1 style="font-size: 100px" class="text-center">
+            <?= Html::encode($exception->statusCode) ?>
+            <br>
+            <small>
+                <?= nl2br(Html::encode($exception->getMessage())) ?>
+            </small>
+        </h1>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+    </div>
 
 </div>

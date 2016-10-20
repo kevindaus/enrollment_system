@@ -2,16 +2,17 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\date\DatePicker;
+use yii\helpers\ArrayHelper;
+use app\models\Course;
+use kartik\widgets\Select2;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\StudentInformation */
 /* @var $form ActiveForm */
-$customCss = <<< SCRIPT
-    .enrollment-form{
-        margin-top: 30px;
-    }
-SCRIPT;
-$this->registerCss($customCss);
+/* @var $allAchievements array */
+
+
 ?>
 
 <div class="enrollment-form">
@@ -29,7 +30,17 @@ $this->registerCss($customCss);
                 <?= $form->field($model, 'firstName') ?>
                 <?= $form->field($model, 'middleName') ?>
                 <?= $form->field($model, 'lastName') ?>
-                <?= $form->field($model, 'birthday') ?>
+                <?= 
+                    $form
+                    ->field($model, 'birthday')
+                    ->widget(DatePicker::classname(), [
+                        'options' => ['placeholder' => 'Enter birth date ...'],
+                        'pluginOptions' => [
+                            'autoclose'=>true
+                        ]
+                    ]);
+
+                ?>
             </div>
         </div>
         <div class="panel panel-info">
@@ -62,7 +73,16 @@ $this->registerCss($customCss);
             <div class="panel-body">
                 <?= $form->field($model, 'height') ?>
                 <?= $form->field($model, 'weight') ?>
-                <?= $form->field($model, 'bloodType') ?>
+                <?= 
+                $form
+                ->field($model, 'bloodType') 
+                ->radioList([
+                    'A'=>'A',
+                    'B'=>'B',
+                    'AB'=>'AB',
+                    'O'=>'O',
+                ]);
+                ?>
             </div>
         </div>
         <div class="panel panel-info">
@@ -74,13 +94,51 @@ $this->registerCss($customCss);
                 <?= $form->field($model, 'highschool_graduated') ?>
             </div>
         </div>
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Course to take</h3>
+            </div>
+            <div class="panel-body">
+                <!-- Course here -->
+                <?= 
+                    Html::dropDownList(
+                            'courseToTake', 
+                            null, 
+                            ArrayHelper::map(Course::find()->all(), 'id', 'name'),
+                            [
+                                'class'=>'form-control'
+                            ]
+                        );
+                ?>
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Achievements</h3>
+            </div>
+            <div class="panel-body">
+            <?= 
+                Select2::widget([
+                    'name' => 'achievements',
+                    'data' => $allAchievements,
+                    // 'data' => [1 => "First", 2 => "Second", 3 => "Third", 4 => "Fourth", 5 => "Fifth"],
+                    'size' => Select2::MEDIUM,
+                    'options' => ['placeholder' => 'Select a state ...', 'multiple' => true],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]);
+
+
+            ?>
+            </div>
+        </div>
     
         <div class="form-group">
             <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-lg pull-right']) ?>
         </div>
         <div class="clearfix"></div>
-        <br>
-        <br>
     <?php ActiveForm::end(); ?>
 
 </div><!-- enroll-_form -->

@@ -29,6 +29,7 @@ use yii\db\Expression;
  * @property string $bloodType
  * @property string $elementary_graduated
  * @property string $highschool_graduated
+ * @property string $gender
  * @property string $created_at
  * @property string $updated_at
  */
@@ -48,7 +49,7 @@ class StudentInformation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title','firstName', 'lastName', 'street', 'barangay'], 'required'],
+            [['title','firstName', 'lastName', 'street', 'barangay','gender'], 'required'],
             [['emailAddress'], 'email'],
             [['birthday', 'created_at', 'updated_at'], 'safe'],
             [['firstName', 'middleName', 'lastName', 'phoneNumber', 'houseNumber', 'street', 'barangay', 'postalCode', 'city', 'province', 'country', 'emailAddress', 'height', 'weight', 'bloodType', 'elementary_graduated', 'highschool_graduated'], 'string', 'max' => 255],
@@ -79,8 +80,8 @@ class StudentInformation extends \yii\db\ActiveRecord
             'height' => 'Height',
             'weight' => 'Weight',
             'bloodType' => 'Blood Type',
-            'elementary_graduated' => 'Elementary Graduated',
-            'highschool_graduated' => 'Highschool Graduated',
+            'elementary_graduated' => 'Elementary School Graduated',
+            'highschool_graduated' => 'Highschool School Graduated',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

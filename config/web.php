@@ -49,6 +49,7 @@ $config = [
             'rules' => [
                 '/login'=>'site/login',
                 '/logout'=>'site/logout',
+                '/course/details/<courseName:\d+>'=>'course/details',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>',                
             ],

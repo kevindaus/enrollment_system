@@ -20,26 +20,50 @@ class m161013_203015_create_student_information_table extends Migration
         }
         $this->createTable('{{%student_information}}', [
             'id' => $this->primaryKey(),
+            /*application information*/
+            'college_admission_test_number' => $this->string()->notNull(),//should be auto generated
+            'official_receipt_number' => $this->string()->notNull(),//should be auto generated
+            'date_taken' => $this->dateTime(),//default to date today
+            'profile_image' => $this->string(),//name of profile image file
+            'application_status' => $this->string()->notNull(),//[New Student , Old Student , Transferee]
+            'is_first_time' => $this->string()->notNull(),//[Yes, No]
+            'is_first_time_location' => $this->string()->notNull(),// [Bayombong , Bambang]
+            /*personal information*/
             'title' => $this->string()->notNull(),
             'firstName' => $this->string()->notNull(),
             'middleName' => $this->string(),
             'lastName' => $this->string()->notNull(),
+            /*contact information*/
             'phoneNumber' => $this->string(),
             'houseNumber' => $this->string(),
-            'gender' => $this->string()->notNull(),
-            'street' => $this->string()->notNull(),
-            'barangay' => $this->string()->notNull(),
-            'postalCode' => $this->string(),
-            'city' => $this->string(),
-            'province' => $this->string()->defaultValue('Nueva Vizcaya'),
-            'country' => $this->string()->defaultValue("Philippines"),
+
+            /*permanent address*/
+            'permanent_address_house_number' => $this->string(),
+            'permanent_address_street' => $this->string(),
+            'permanent_address_purok' => $this->string(),
+            'permanent_address_barangay' => $this->string(),
+            'permanent_address_town' => $this->string(),
+            'permanent_address_province' => $this->string()->defaultValue('Nueva Vizcaya'),
+            'permanent_address_postalCode' => $this->string(),
+            /*residential address*/
+            'residential_address_house_number' => $this->string(),
+            'residential_address_street' => $this->string(),
+            'residential_address_purok' => $this->string(),
+            'residential_address_barangay' => $this->string(),
+            'residential_address_town' => $this->string(),
+            'residential_address_province' => $this->string()->defaultValue('Nueva Vizcaya'),
+            'residential_address_postalCode' => $this->string(),
+            /*other information*/
             'birthday' => $this->date(),
-            'emailAddress' => $this->string(),
-            'height' => $this->string(),
-            'weight' => $this->string(),
-            'bloodType' => $this->string(),
-            'elementary_graduated' => $this->string(),
-            'highschool_graduated' => $this->string(),
+            'age' => $this->integer(),//age of the person when he/she enrolled
+            'place_of_birth' => $this->string(),//
+            'civil_status' => $this->string(),//[Single , Married]
+            'gender' => $this->string(),//[Single , Married]
+            'ethnic_origin' => $this->string(),//[Single , Married]
+            'citizenship' => $this->string(),//[Single , Married]
+            /**/
+            'signature_image' => $this->string(),//signature image of student
+
             'created_at' => $this->dateTime(),
             'updated_at' => $this->dateTime(),
         ], $tableOptions);

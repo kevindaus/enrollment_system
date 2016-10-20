@@ -17,6 +17,13 @@ $this->registerJsFile('/assets/js/jquery.counterup.js', ['depends' => [\yii\web\
 $this->registerJsFile('/assets/js/custom.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 AppAsset::register($this);
 
+$customCss = <<< SCRIPT
+  #main-content {
+    min-height: 550px;
+  }
+SCRIPT;
+$this->registerCss($customCss);
+
 
 ?>
 <?php $this->beginPage() ?>
@@ -76,7 +83,9 @@ AppAsset::register($this);
   <!-- End search box -->
 
   <?php require_once 'bread_crumb.php'; ?>
-  <?= $content ?>
+  <div id="main-content">
+    <?= $content ?>
+  </div>
 
   <!-- Start footer -->
   <?php require_once 'footer.php'; ?>

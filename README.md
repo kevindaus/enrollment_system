@@ -35,10 +35,72 @@ COOKIE_VALIDATION_KEY=
 
 
 
-CONFIGURATION
+
+
+tables
+---------
+
+
+educational_attainment
+---------
+id
+education
+name_of_school
+address_of_school
+inclusive_dates_of_attendance
+
+
+awards_received
+---------
+id
+educational_attainment_id
+awards_name
+
+course
+---------
+id
+course_name
+
+
+student_course
+---------
+id
+student_id
+course_id
+
+
+system_account
+---------
+id
+username
+password
+authKey
+accessToken
+
+
+
+
+NOTES
 ------------
 
-* Coourse management for admin
+student_educational_attainment
+has many awards_received
+
+
+
+awards_receieved
+--
+id
+educational_attainment_id
+
+
+educational_attainment8
+
+
+TODO
+------------
+
+* Course management for admin
 	create table 
 		WYSWIG for description
 		WYSWIG for course_outline
@@ -64,9 +126,22 @@ courses page
 	list of salutatorian
 	list of varsity students
 
+@TODO - allow user to choose atleast 3 course 
+1 preference
+2 preference
+3 preference
 
 
+@TODO - order of form field
+order should adhere to the form 
+given
 
 
+@TODO - app\commands\InitCoursesController
+initialize the courses  , 
+insert the courses here
 
 
+@TODO - app\commands\InitAchievementsController
+initialize the achievements  , 
+insert the achievements here
