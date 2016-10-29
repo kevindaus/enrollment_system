@@ -5,6 +5,16 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
+$navItems = [
+  ['label' => 'Home', 'url' => ['/site/index']],
+  ['label' => 'Enroll', 'url' => ['/enroll']],
+  ['label' => 'Dashboard', 'url' => ['/dashboard'] , 'visible'=> \Yii::$app->user->can('admin') ]
+];
+if (Yii::$app->user->isGuest) {
+  $navItems[] =  ['label' => 'Login', 'url' => ['/login'] , 'visible'=> Yii::$app->user->isGuest ];
+}else {
+  $navItems[] =  ['label' => "Logout (".Yii::$app->user->identity->username.")", 'url' => ['/logout'] , 'visible'=> !Yii::$app->user->isGuest ];
+}
 
 ?>
   <section id="mu-menu">
@@ -34,23 +44,7 @@ use app\assets\AppAsset;
       ]);
       echo Nav::widget([
           'options' => ['class' => 'navbar-nav navbar-right'],
-          'items' => [
-              ['label' => 'Home', 'url' => ['/site/index']],
-              ['label' => 'Enroll', 'url' => ['/enroll']],
-              // ['label' => 'Contact', 'url' => ['/site/contact']],
-              Yii::$app->user->isGuest ? (
-                  ['label' => 'Login', 'url' => ['/login']]
-              ) : (
-                  '<li>'
-                  . Html::beginForm(['/logout'], 'post', ['class' => 'navbar-form'])
-                  . Html::submitButton(
-                      'Logout (' . Yii::$app->user->identity->username . ')',
-                      ['class' => 'btn btn-link']
-                  )
-                  . Html::endForm()
-                  . '</li>'
-              )
-          ],
+          'items' => $navItems,
       ]);
       NavBar::end();
       ?>

@@ -17,8 +17,8 @@ class m161020_135458_create_student_course extends Migration
             "student_id" => $this->integer(),
             "course_id" => $this->integer(),
         ], $tableOptions);
-        $this->addForeignKey('student_id_fk', '{{%student_course}}', 'student_id', '{{%student_information}}', 'id');
-        $this->addForeignKey('course_id_fk', '{{%student_course}}', 'course_id', '{{%course}}', 'id');
+        $this->addForeignKey('student_id_fk', '{{%student_course}}', 'student_id', '{{%student_information}}', 'id',"CASCADE","CASCADE");
+        $this->addForeignKey('course_id_fk', '{{%student_course}}', 'course_id', '{{%course}}', 'id',"CASCADE","CASCADE");
     }
 
     public function down()

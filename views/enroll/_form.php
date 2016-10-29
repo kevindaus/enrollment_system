@@ -13,22 +13,95 @@ use app\models\Course;
 use kartik\widgets\Select2;
 use kartik\tabs\TabsX;
 use yii\helpers\Url;
+use kartik\widgets\TypeaheadBasic;
 
 
 ?>
-
-
+<script type="text/javascript">
+    function toggleFirstTimeLocation(currentDom) {
+        currentDom = jQuery(currentDom);
+        if(currentDom.val() == 'Yes'){
+            //show first time location
+            jQuery("#firstTimeLocationContainer").show();
+        }else{
+            jQuery("#firstTimeLocationContainer").hide();
+        }
+    }
+</script>
 <div class="enrollment-form">
-    <?php $form = ActiveForm::begin(); ?>
-        <div class="panel panel-warning">
+    <?php 
+        $form = ActiveForm::begin([
+            'enableClientValidation'=>false
+        ]); 
+    ?>
+        <?php if ($newStudent->hasErrors()): ?>
+        <div class="panel panel-danger">
             <div class="panel-heading">
-                <h3 class="panel-title"></h3>
+                <h3 class="panel-title">Error:</h3>
             </div>
             <div class="panel-body">
                 <?= Html::errorSummary($newStudent); ?>
             </div>
         </div>
-        <div class="panel panel-info">
+        <?php endif ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">APPLICATION STATUS </h3>
+            </div>
+            <div class="panel-body">
+                <?= 
+                $form
+                ->field($newStudent, 'application_status')
+                ->dropDownList([
+                    'New Student'=> 'New Student',
+                    'Old Student'=> 'Old Student',
+                    'Transferee'=> 'Transferee',
+                ], ['class' => 'form-control'])
+                ->label("");
+                ?>                
+                <?= 
+                    $form
+                    ->field($newStudent, 'is_first_time')
+                    ->dropDownList([
+                        'Yes'=>'Yes',
+                        'No'=>'No'
+                    ], ['class' => 'form-control','onchange'=>'toggleFirstTimeLocation(this)','prompt'=>'-- Please Select --'])
+                    ->label("Is this your first time to take NVSU-CAT?");
+                ?>
+                <div id="firstTimeLocationContainer" style="display: none">
+                    <?= 
+                        $form
+                        ->field($newStudent, 'is_first_time_location')
+                        ->dropDownList([
+                                'Bayombong'=>'Bayombong',
+                                'Bambang'=>'Bambang'
+                            ])
+                        ->label("Where ? ")
+                        ; 
+                    ?>
+                </div>
+
+                
+
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Preferred Course</h3>
+            </div>
+            <div class="panel-body">
+            <label>1st Preferred Course</label>
+            <?= Html::activeDropDownList($preferredCourseForm, 'firstPreferredCourse', $allAvailableCourses,['class'=>'form-control']); ?>
+            <br>
+            <label>2nd Preferred Course</label>
+            <?= Html::activeDropDownList($preferredCourseForm, 'secondPreferredCourse', $allAvailableCourses,['class'=>'form-control']); ?>
+            <br>
+            <label>3rd Preferred Course</label>
+            <?= Html::activeDropDownList($preferredCourseForm, 'thirdPreferredCourse', $allAvailableCourses,['class'=>'form-control']); ?>
+            <br>
+            </div>
+        </div>
+        <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Personal Information</h3>
             </div>
@@ -41,6 +114,7 @@ use yii\helpers\Url;
                 <?= $form->field($newStudent, 'firstName') ?>
                 <?= $form->field($newStudent, 'middleName') ?>
                 <?= $form->field($newStudent, 'lastName') ?>
+                <?= $form->field($newStudent, 'phoneNumber') ?>
                 <?= 
                     $form
                     ->field($newStudent, 'birthday')
@@ -50,11 +124,51 @@ use yii\helpers\Url;
                             'autoclose'=>true
                         ]
                     ]);
-
+                ?>
+                <?= 
+                $form
+                    ->field($newStudent, 'place_of_birth')
+                    ->label("Place of birth(Town,Province)")
+                    ->textInput(); 
+                ?>                
+                <?= 
+                $form
+                    ->field($newStudent, 'age')
+                    ->label("Age")
+                    ->textInput(); 
+                ?>
+                <?= 
+                    $form
+                    ->field($newStudent, 'civil_status')
+                    ->dropDownList([
+                        'Single'=>'Single',
+                        'Married'=>'Married',
+                        'Widowed'=>'Widowed',
+                        'Separated'=>'Separated',
+                        'Divorced'=>'Divorced'
+                    ]); 
+                ?>
+                <?= 
+                    $form
+                    ->field($newStudent, 'gender')
+                    ->dropDownList([
+                        'Male'=>'Male',
+                        'Female'=>'Female'
+                    ]); 
+                ?>
+                <?= 
+                    $form
+                    ->field($newStudent, 'ethnic_origin')
+                    ->textInput()
+                ?>                
+                <?= 
+                    $form
+                    ->field($newStudent, 'citizenship')
+                    ->textInput()
                 ?>
             </div>
         </div>
-        <div class="panel panel-info">
+        <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Permanent Address</h3>
             </div>
@@ -65,10 +179,10 @@ use yii\helpers\Url;
                 <?= $form->field($newStudent, 'permanent_address_barangay')->hint("e.g Barangay Roxas") ?>
                 <?= $form->field($newStudent, 'permanent_address_town')->hint("e.g Solano") ?>
                 <?= $form->field($newStudent, 'permanent_address_province')->hint("e.g Nueva Vizcaya") ?>
-                <?= $form->field($newStudent, 'permanent_address_postalCode')->hint("e.g Philippines") ?>
+                <?= $form->field($newStudent, 'permanent_address_postalCode')->hint("e.g 3709 for Solano") ?>
             </div>
         </div>
-        <div class="panel panel-info">
+        <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Residential Address</h3>
             </div>
@@ -79,40 +193,121 @@ use yii\helpers\Url;
                 <?= $form->field($newStudent, 'residential_address_barangay')->hint("e.g Barangay Roxas") ?>
                 <?= $form->field($newStudent, 'residential_address_town')->hint("e.g Solano") ?>
                 <?= $form->field($newStudent, 'residential_address_province')->hint("e.g Nueva Vizcaya") ?>
-                <?= $form->field($newStudent, 'residential_address_postalCode')->hint("e.g Philippines") ?>
+                <?= $form->field($newStudent, 'residential_address_postalCode')->hint("e.g 3709 for Solano") ?>
             </div>
         </div>
-        <div class="panel panel-info">
+        <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Educational Attainment </h3>
             </div>
             <div class="panel-body">
             <?php $this->beginBlock('elementary') ?>
-                <?= $form->field($elementaryEducationalAttainment, 'education')->textInput(['disabled' => 'disabled'])->label('Educational Attainment'); ?>
-                <?= $form->field($elementaryEducationalAttainment, 'name_of_school')->textInput(); ?>
+                <label>Name of School</label>
+                <?= 
+                    TypeaheadBasic::widget([
+                        'model' => $elementaryEducationalAttainment,
+                        'attribute' => 'name_of_school',
+                        'data' => $allElementarySchools,
+                        'options' => ['placeholder' => 'Filter as you type ...'],
+                        'pluginOptions' => ['highlight'=>true],
+                    ]);
+                ?>
                 <?= $form->field($elementaryEducationalAttainment, 'address_of_school')->textInput(); ?>
-                <?= $form->field($elementaryEducationalAttainment, 'inclusive_dates_of_attendance')->textInput(); ?>
+                <?= $form->field($elementaryEducationalAttainment, 'inclusive_dates_of_attendance')->textInput()->hint("e.g 2004-2008"); ?>
+                <label>Award Achivements</label>
+                <?= 
+                    Select2::widget([
+                        'name' => 'elementaryEducationalAttainmentAwards',
+                        'data' => $allAchievements,
+                        'options' => ['placeholder' => 'Select...', 'multiple' => true],
+                        'pluginOptions' => [
+                            'tags' => true,
+                        ],
+                    ]);
+                ?>
+                
             <?php $this->endBlock() ?>
 
             <?php $this->beginBlock('secondary') ?>
-                <?= $form->field($secondaryEducationalAttainment, 'education')->textInput(['disabled' => 'disabled'])->label('Educational Attainment'); ?>
-                <?= $form->field($secondaryEducationalAttainment, 'name_of_school')->textInput(); ?>
+
+                <label>Name of School</label>
+                <?= 
+                    TypeaheadBasic::widget([
+                        'model' => $secondaryEducationalAttainment,
+                        'attribute' => 'name_of_school',
+                        'data' => $allHighSchools,
+                        'options' => ['placeholder' => 'Filter as you type ...'],
+                        'pluginOptions' => ['highlight'=>true],
+                    ]);
+                ?>
                 <?= $form->field($secondaryEducationalAttainment, 'address_of_school')->textInput(); ?>
-                <?= $form->field($secondaryEducationalAttainment, 'inclusive_dates_of_attendance')->textInput(); ?>
+                <?= $form->field($secondaryEducationalAttainment, 'inclusive_dates_of_attendance')->textInput()->hint("e.g 2004-2008");; ?>
+                <label>Award Achivements</label>                
+                <?= 
+                    Select2::widget([
+                        'name' => 'secondaryEducationalAttainmentAwards',
+                        'data' => $allAchievements,
+                        'options' => ['placeholder' => 'Select...', 'multiple' => true],
+                        'pluginOptions' => [
+                            'tags' => true,
+                        ],
+                    ]);
+                ?>
             <?php $this->endBlock() ?>
 
             <?php $this->beginBlock('vocational') ?>
-                <?= $form->field($vocationalEducationalAttainment, 'education')->textInput(['disabled' => 'disabled'])->label('Educational Attainment'); ?>
-                <?= $form->field($vocationalEducationalAttainment, 'name_of_school')->textInput(); ?>
+
+                <label>Name of School</label>
+                <?= 
+                    TypeaheadBasic::widget([
+                        'model' => $vocationalEducationalAttainment,
+                        'attribute' => 'name_of_school',
+                        'data' => $allVocationalSchools,                        'options' => ['placeholder' => 'Filter as you type ...'],
+                        'pluginOptions' => ['highlight'=>true],
+                    ]);
+                ?>
                 <?= $form->field($vocationalEducationalAttainment, 'address_of_school')->textInput(); ?>
-                <?= $form->field($vocationalEducationalAttainment, 'inclusive_dates_of_attendance')->textInput(); ?>
+                <?= $form->field($vocationalEducationalAttainment, 'inclusive_dates_of_attendance')->textInput()->hint("e.g 2004-2008");; ?>
+                <label>Award Achivements</label>
+                <?= 
+                    Select2::widget([
+                        'name' => 'vocationalEducationalAttainmentAwards',
+                        'data' => $allAchievements,
+                        'options' => ['placeholder' => 'Select...', 'multiple' => true],
+                        'pluginOptions' => [
+                            'tags' => true,
+                        ],
+                    ]);
+                ?>
+                
+
             <?php $this->endBlock() ?>
 
-            <?php $this->beginBlock('ternary') ?>
-                <?= $form->field($tertiaryEducationalAttainment, 'education')->textInput(['disabled' => 'disabled'])->label('Educational Attainment'); ?>
-                <?= $form->field($tertiaryEducationalAttainment, 'name_of_school')->textInput(); ?>
+            <?php $this->beginBlock('tertiary') ?>
+                <label>Name of School</label>
+                <?= 
+                    TypeaheadBasic::widget([
+                        'model' => $tertiaryEducationalAttainment,
+                        'attribute' => 'name_of_school',
+                        'data' => $allTertiarySchools,
+                        'pluginOptions' => ['highlight'=>true],
+                    ]);
+                ?>
                 <?= $form->field($tertiaryEducationalAttainment, 'address_of_school')->textInput(); ?>
-                <?= $form->field($tertiaryEducationalAttainment, 'inclusive_dates_of_attendance')->textInput(); ?>
+                <?= $form->field($tertiaryEducationalAttainment, 'inclusive_dates_of_attendance')->textInput()->hint("e.g 2004-2008");; ?>
+                <label>Award Achivements</label>
+                <?= 
+                    Select2::widget([
+                        'name' => 'tertiaryEducationalAttainmentAwards',
+                        'data' => $allAchievements,
+                        'options' => ['placeholder' => 'Select...', 'multiple' => true],
+                        'pluginOptions' => [
+                            'tags' => true,
+                        ],
+                    ]);
+                ?>
+                
+
 
             <?php $this->endBlock() ?>
 
@@ -120,6 +315,7 @@ use yii\helpers\Url;
             <?= Html::errorSummary($secondaryEducationalAttainment); ?>
             <?= Html::errorSummary($vocationalEducationalAttainment); ?>
             <?= Html::errorSummary($tertiaryEducationalAttainment); ?>
+
             <?= 
             TabsX::widget([
                 'items'=>[
@@ -137,8 +333,8 @@ use yii\helpers\Url;
                         'content'=>$this->blocks['vocational'],
                     ],
                     [
-                        'label'=>'Ternary',
-                        'content'=>$this->blocks['ternary'],
+                        'label'=>'Tertiary',
+                        'content'=>$this->blocks['tertiary'],
                     ],
                 ],
                 'position'=>TabsX::POS_LEFT,
@@ -151,7 +347,7 @@ use yii\helpers\Url;
 
     
         <div class="form-group">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-lg pull-right']) ?>
+            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-lg btn-block']) ?>
         </div>
         <div class="clearfix"></div>
     <?php ActiveForm::end(); ?>

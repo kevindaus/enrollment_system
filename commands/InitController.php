@@ -23,13 +23,18 @@ class InitController extends Controller{
          * @var $authManager DbManager
          */
         $authManager = \Yii::$app->authManager;
-        $adminRole = $authManager->createRole("admin");
-        $authManager->add($adminRole);
+        $adminRole = "";
+        SystemAccount::deleteAll();
+        $adminRole = $authManager->getRole("admin");
+        if (!$adminRole) {
+            $adminRole = $authManager->createRole("admin");
+            $authManager->add($adminRole);
+        }
         $adminAccount = new SystemAccount();
         $adminAccount->username = "admin";
         $adminAccount->password = "y14gK38T6JAb7cH";
         if ($adminAccount->save()) {
-	        $authManager->assign($adminRole,$adminAccount->id);
+            $authManager->assign($adminRole,$adminAccount->id);
         }
         //done
     }
@@ -38,19 +43,61 @@ class InitController extends Controller{
     {
         /* @todo - initialize course*/
         Course::deleteAll();
-        /* Information Tech*/
-        $itCourse = new Course();
-        $itCourse->course_name = "Bachelor of Science in Information Technology";
-        $itCourse->save();
-        /* Nursing */
-        $nursingCourse = new Course();
-        $nursingCourse->course_name = "Bachelor of Arts and Science";
-        $nursingCourse->save();
-        /* Educ */
-        $educCourse = new Course();
-        $educCourse->course_name = "Bachelor of Education (Secondary)";
-        $educCourse->save();
-        echo "Initial course data inserted";
+        $courseCollection = [
+            "BS in Ecotourism",
+            "BS in Hospitality Management major in Travel Management",
+            "BS in Hospitality Management major in Hotel and Restaurant Management",
+            "BS in Industrial Education major in  Automotive",
+            "BS in Industrial Education major in  Furniture and Cabinet Making",
+            "BS in Industrial Education major in  Industrial Arts",
+            "Bachelor of Elementary Education",
+            "Bachelor of Secondary Education major in English",
+            "Bachelor of Secondary Education major in General Science",
+            "Bachelor of Secondary Education major in Music, Arts, Physical Education and Health",
+            "Bachelor of Secondary Education major in Technology and Livelihood Education",
+            "BS in Mathematics ",
+            "BS in Environmental Science ",
+            "Bachelor in Agricultural Technology",
+            "BS in Home Technology major in Food and Nutrition",
+            "BS in Industrial Education major in Automotive ",
+            "BS in Information Technology ",
+            "BS in Computer Science ",
+            "BS in Agricultural Engineering  major in Agricultural Structures & Environmental Sanitation",
+            "BS in Agricultural Engineering  major in Crop Processing",
+            "BS in Agricultural Engineering  major in Soil and Water Management",
+            "BS in Civil Engineering major in Geotechnical Engineering",
+            "BS in Civil Engineering major in Hydraulics and Water Resources Engineering",
+            "BS in Civil Engineering major in Structural Engineering",
+            "BS in Civil Engineering major in Transportation Engineering",
+            "BS in Geodetic Engineering",
+            "BS in Business Administration  major in Financial Management",
+            "BS in Business Administration  major in Marketing Management",
+            "BS in Forestry",
+            "BS in Agroforestry",
+            "BS in Agriculture major in Agro-Fisheries",
+            "BS in Agriculture major in Agronomy",
+            "BS in Agriculture major in Animal Science",
+            "BS in Agriculture major in Crop Protection",
+            "BS in Agriculture major in Crop Science",
+            "BS in Agriculture major in Horticulture",
+            "BS in Agriculture major in Soil Science",
+            "BS in Agricultural Engineering  major in Agricultural Structures & Environmental Sanitation",
+            "BS in Agricultural Engineering  major in Crop Processing",
+            "BS in Agricultural Engineering  major in Soil and Water Management",
+            "Bachelor in Agricultural Technology",
+            "Bachelor in Animal Science",
+            "BS in Agribusiness",
+            "BS in Agricultural Education",
+        ];
+
+        foreach ($courseCollection as $currentCourse) {
+            $newCourse = new Course();
+            $newCourse->course_name = $currentCourse;
+            if ($newCourse->save()) {
+                echo "$currentCourse saved! \r\n";
+            }
+        }
+        echo "Initial course data inserted \r\n";
     }
     public function actionAchievements()
     {

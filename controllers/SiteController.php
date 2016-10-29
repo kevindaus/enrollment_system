@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use yii\web\Cookie;
 
 class SiteController extends Controller
 {
@@ -25,14 +26,9 @@ class SiteController extends Controller
                     ],
                 ],
             ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
         ];
     }
+
 
     public function actions()
     {
@@ -46,12 +42,27 @@ class SiteController extends Controller
             ],
         ];
     }
+    public function actionTest()
+    {
+        $expirationDate = strtotime("+1 hour");
+        $newCookie = new Cookie();
+        $newCookie->name = "student_id_test1";
+        $newCookie->value = 15;
+        var_dump($expirationDate);
+        die;
+        Yii::$app->response->cookies->add($newCookie);
+        var_dump(Yii::$app->request->cookies->get("student_id_test1"));
+    }
+    public function actionReminder()
+    {
+        return $this->render('reminder');
+    }
 
     public function actionIndex()
     {
         // todo
-        $numberOfCourses = 0;
-        $signedUpStudents = 0;
+        $numberOfCourses = \app\models\Course::find()->count();
+        $signedUpStudents = \app\models\StudentInformation::find()->count();
         return $this->render('index',compact('numberOfCourses','signedUpStudents'));
     }
 

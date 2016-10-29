@@ -13,16 +13,19 @@ class m161020_135429_create_educational_attainment extends Migration
         }
         $this->createTable('{{%educational_attainment}}', [
             'id' => $this->primaryKey(),
-            "education" => $this->string()->notNull(),
-            "name_of_school" => $this->string()->notNull(),
+            "student_id" => $this->integer(),//owner of student id
+            "education" => $this->string(),
+            "name_of_school" => $this->string(),
             "address_of_school" => $this->string(),
             "inclusive_dates_of_attendance" => $this->string(),
         ], $tableOptions);
+        $this->addForeignKey("student_educational_attainment_fk", "educational_attainment", "student_id", "student_information","id","CASCADE","CASCADE");
         
     }
 
     public function down()
     {
+        $this->dropForeignKey("student_educational_attainment_fk", "educational_attainment");
         $this->dropTable('{{%educational_attainment}}');
     }
 

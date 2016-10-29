@@ -34,11 +34,17 @@ $this->registerCss($customCss);
 				</div>
 				<?php endif ?>
 				<h1>Enrollment Form</h1>
-				<hr>
+			<hr>
 				<?= 
 					$this->render('_form', compact(
 						'newStudent',
+						'allElementarySchools',
+						'allHighSchools',
+						'allVocationalSchools',
+						'allTertiarySchools',
 						'allAchievements',
+						'allAvailableCourses',
+						'preferredCourseForm',
 			        	'elementaryEducationalAttainment',
 			        	'secondaryEducationalAttainment',
 			        	'vocationalEducationalAttainment',

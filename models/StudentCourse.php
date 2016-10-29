@@ -10,6 +10,7 @@ use Yii;
  * @property integer $id
  * @property integer $student_id
  * @property integer $course_id
+ * @property Course $course
  */
 class StudentCourse extends \yii\db\ActiveRecord
 {

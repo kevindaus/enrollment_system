@@ -14,12 +14,15 @@ class m161020_135438_awards_received extends Migration
         }
         $this->createTable('{{%awards_received}}', [
             'id' => $this->primaryKey(),
+            'education_attainment_id' => $this->integer(),
             "awards_name" => $this->string(),
         ], $tableOptions);
+        $this->addForeignKey("education_attainment_id_fk", "awards_received", "education_attainment_id", "educational_attainment", "id","CASCADE","CASCADE");
     }
 
     public function down()
     {
+        $this->dropForeignKey("education_attainment_id_fk", "awards_received");
         $this->dropTable('{{%awards_received}}');
     }
 

@@ -8,6 +8,13 @@
 
 namespace app\controllers;
 
+use app\models\AwardsReceived;
+use app\models\ElementaryEducationalAttaintment;
+use app\models\PreferredCourseForm;
+use app\models\SecondaryEducationalAttaintment;
+use app\models\StudentCourse;
+use app\models\TertiaryEducationalAttaintment;
+use app\models\VocationalEducationalAttaintment;
 use Yii;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
@@ -15,44 +22,159 @@ use \app\models\StudentInformation;
 use yii\data\ActiveDataProvider;
 use \app\models\Course;
 use \app\models\EducationalAttainment;
+use yii\web\Cookie;
 
-class EnrollController extends Controller{
+class EnrollController extends Controller
+{
+    private function transformToSelectDatasource($arr)
+    {
+        $tempContainer = [];
+        if (count($arr) === 0) {
+            $tempContainer[] ='';
+        } else {
+            foreach ($arr as $key => $value) {
+                $tempContainer[$key] = $value['name_of_school'];
+            }
+        }
+        return $tempContainer;
+    }
     public function actionIndex()
     {
-		$newStudent = new \app\models\StudentInformation();
-	    $allAchievements = $this->getAllAchievements();
-	    /*course preferences */
-	    
+        $newStudent = new \app\models\StudentInformation(['date_taken' => date("Y-m-d H:i:s")]);
+        if (!isset($newStudent->citizenship)) {
+        	$newStudent->citizenship = "Filipino";
+        }
+        $allAchievements = AwardsReceived::getAllAchievements();
+        $allAvailableCourses = Course::getAllAvailableCourses();
 
-	    /*educational attainment*/
-	    $elementaryEducationalAttainment = new EducationalAttainment(['education'=>'Elementary']);
-	    $secondaryEducationalAttainment = new EducationalAttainment(['education'=>'Secondary']);
-	    $vocationalEducationalAttainment = new EducationalAttainment(['education'=>'Vocational']);
-	    $tertiaryEducationalAttainment = new EducationalAttainment(['education'=>'Tertiary']);
+        $allElementarySchools = EducationalAttainment::getAllElementarySchool();
+        $allElementarySchools = $this->transformToSelectDatasource($allElementarySchools);
+        $allHighSchools = EducationalAttainment::getAllHighSchool();
+        $allHighSchools = $this->transformToSelectDatasource($allHighSchools);
+        $allVocationalSchools = EducationalAttainment::getAllVocationalSchool();
+        $allVocationalSchools = $this->transformToSelectDatasource($allVocationalSchools);
+        $allTertiarySchools = EducationalAttainment::getAllTertiarySchool();
+        $allTertiarySchools = $this->transformToSelectDatasource($allTertiarySchools);
+        /*educational attainment*/
+        $elementaryEducationalAttainment = new ElementaryEducationalAttaintment();
+        $elementaryEducationalAttainment->education = "Elementary";        
+        $secondaryEducationalAttainment = new SecondaryEducationalAttaintment();
+        $secondaryEducationalAttainment->education = "Secondary";        
+        $vocationalEducationalAttainment = new VocationalEducationalAttaintment();
+        $vocationalEducationalAttainment->education = "Vocational";
+        $tertiaryEducationalAttainment = new TertiaryEducationalAttaintment();
+        $tertiaryEducationalAttainment->education = "Tertiary";
 
-	    /*@TODO - register the new student*/
+        /*course preferences */
+        /*make sure all is valid before saving*/
+	    $preferredCourseForm = new PreferredCourseForm();
 
+        if ($preferredCourseForm->load(Yii::$app->request->post()) && $preferredCourseForm->validate()) {
+            if ($newStudent->load(Yii::$app->request->post()) && $newStudent->save()) {
+                /*save student educational attainment*/
+                if ($elementaryEducationalAttainment->load(Yii::$app->request->post()) && $elementaryEducationalAttainment->save()) {
+                    $elementaryEducationalAttainment->student_id = $newStudent->id;
+                    $elementaryEducationalAttainment->save(false);
+                    $elementaryEducationalAttainment->update(false, [
+                        'education'=>'Elementary',
+                    ]);
+                    if (Yii::$app->request->post('elementaryEducationalAttainmentAwards')) {
+                        $awardsCollection = Yii::$app->request->post('elementaryEducationalAttainmentAwards');
+                        foreach ($awardsCollection as $currentAward) {
+                            $currentAwardObj = new AwardsReceived();
+                            $currentAwardObj->education_attainment_id = $elementaryEducationalAttainment->id;
+                            $currentAwardObj->awards_name = $currentAward;
+                            $currentAwardObj->save();
+                        }
+                    }
+                }
+                if ($secondaryEducationalAttainment->load(Yii::$app->request->post()) && $secondaryEducationalAttainment->save()) {
+                    $secondaryEducationalAttainment->student_id = $newStudent->id;
+                    $secondaryEducationalAttainment->save(false);
+                    $secondaryEducationalAttainment->update(false, [
+                        'education'=>'Secondary'
+                    ]);
+                    if (Yii::$app->request->post('secondaryEducationalAttainmentAwards')) {
+                        $awardsCollection = Yii::$app->request->post('secondaryEducationalAttainmentAwards');
+                        foreach ($awardsCollection as $currentAward) {
+                            $currentAwardObj = new AwardsReceived();
+                            $currentAwardObj->education_attainment_id = $secondaryEducationalAttainment->id;
+                            $currentAwardObj->awards_name = $currentAward;
+                            $currentAwardObj->save();
+                        }
+                    }
+                }
 
-        return $this->render('index',compact(
-	        	'newStudent',
-	        	'allAchievements',
-	        	'elementaryEducationalAttainment',
-	        	'secondaryEducationalAttainment',
-	        	'vocationalEducationalAttainment',
-	        	'tertiaryEducationalAttainment'
-        	));
+                if ($vocationalEducationalAttainment->load(Yii::$app->request->post()) && $vocationalEducationalAttainment->save()) {
+                    $vocationalEducationalAttainment->student_id = $newStudent->id;
+                    $vocationalEducationalAttainment->save(false);
+                    $vocationalEducationalAttainment->update(false, [
+                        'education'=>'Vocation'
+                    ]);
+                    if (Yii::$app->request->post('tertiaryEducationalAttainmentAwards')) {
+                        $awardsCollection = Yii::$app->request->post('tertiaryEducationalAttainmentAwards');
+                        foreach ($awardsCollection as $currentAward) {
+                            $currentAwardObj = new AwardsReceived();
+                            $currentAwardObj->education_attainment_id = $vocationalEducationalAttainment->id;
+                            $currentAwardObj->awards_name = $currentAward;
+                            $currentAwardObj->save();
+                        }
+                    }
+                }
+                if ($tertiaryEducationalAttainment->load(Yii::$app->request->post()) && $tertiaryEducationalAttainment->save()) {
+                    $tertiaryEducationalAttainment->student_id = $newStudent->id;
+                    $tertiaryEducationalAttainment->save(false);
+                    $tertiaryEducationalAttainment->update(false, [
+                        'education'=>'Tertiary'
+                    ]);                       
+                    if (Yii::$app->request->post('tertiaryEducationalAttainmentAwards')) {
+                        $awardsCollection = Yii::$app->request->post('tertiaryEducationalAttainmentAwards');
+                        foreach ($awardsCollection as $currentAward) {
+                            $currentAwardObj = new AwardsReceived();
+                            $currentAwardObj->education_attainment_id = $tertiaryEducationalAttainment->id;
+                            $currentAwardObj->awards_name = $currentAward;
+                            $currentAwardObj->save();
+                        }
+                    }
+                }
+                /*save student course*/
+                $studentPreferedCourseFirst = new StudentCourse();
+                $studentPreferedCourseFirst->student_id = intval($newStudent->id);
+                $studentPreferedCourseFirst->course_id = intval($preferredCourseForm->firstPreferredCourse);
+                $studentPreferedCourseFirst->save();
+                $studentPreferedCourseSecond = new StudentCourse();
+                $studentPreferedCourseSecond->student_id = intval($newStudent->id);
+                $studentPreferedCourseSecond->course_id = intval($preferredCourseForm->secondPreferredCourse);
+                $studentPreferedCourseSecond->save();
+                $studentPreferedCourseThird = new StudentCourse();
+                $studentPreferedCourseThird->student_id = intval($newStudent->id);
+                $studentPreferedCourseThird->course_id = intval($preferredCourseForm->thirdPreferredCourse);
+                $studentPreferedCourseThird->save();
+                $newCookie = new Cookie();
+                $newCookie->name = "temp_edit_student";
+                $newCookie->value = uniqid();
+                Yii::$app->response->cookies->add($newCookie);
+                Yii::$app->session->setFlash('success', "Success! You have been listed. Please read the reminder for further information/instruction.");
+                return $this->redirect("/reminder");
+                
+            }
+        }
+
+        return $this->render('index', compact(
+            'allElementarySchools',
+            'allHighSchools',
+            'allVocationalSchools',
+            'allTertiarySchools',
+            'newStudent',
+            'allAchievements',
+            'allAvailableCourses',
+            'preferredCourseForm',
+            'elementaryEducationalAttainment',
+            'secondaryEducationalAttainment',
+            'vocationalEducationalAttainment',
+            'tertiaryEducationalAttainment'
+        ));
     }
-    protected function getAllAchievements()
-    {
-		$query = new \yii\db\Query();		
-		$allAchievements = $query->select('*')
-			->from('awards_received')
-			->all();
-	    $tempContainer = [];
-	    foreach ($allAchievements as $currentAchievementRow) {
-	    	$tempContainer[] = $currentAchievementRow['name'];
-	    }
-    	return $tempContainer;
-    }
+
 
 } 
