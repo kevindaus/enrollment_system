@@ -91,7 +91,7 @@ class NewEnrolleeEventHandlerUnitTest extends \Codeception\TestCase\Test
         $this->specify("Insert 50 records will fill up the first batch of test takers", function () {
             /*insert 50 records*/
             $faker = Factory::create();
-            $faker->seed(100);            
+            $faker->seed(50);            
             foreach (range(1, 50) as $currentNum) {
                 $newstudent = new StudentInformation();
                 $newstudent->requirement_certificate = uniqid();
@@ -119,11 +119,12 @@ class NewEnrolleeEventHandlerUnitTest extends \Codeception\TestCase\Test
 
         /*get the last exam log from the database , update the examination date , minus 10 days */
         $mockedDate = new \DateTime();
-        $mockedDate->add(new \DateInterval("P-10D"));
+        $mockedDate->sub(new \DateInterval("P10D"));
         $lastExamLog = ExaminationLog::find()->orderBy('id DESC')->one();
         $lastExamLog->examination_date = $mockedDate->format("Y-m-d H:i:s");
         $lastExamLog->update();
         /*insert single record , */
+        $faker = Factory::create(); 
         $newstudent = new StudentInformation();
         $newstudent->requirement_certificate = uniqid();
         $newstudent->student_picture = uniqid();
