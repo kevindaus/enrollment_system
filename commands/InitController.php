@@ -93,6 +93,8 @@ class InitController extends Controller{
         foreach ($courseCollection as $currentCourse) {
             $newCourse = new Course();
             $newCourse->course_name = $currentCourse;
+            $newCourse->course_description = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet quod nisi quisquam modi dolore, dicta obcaecati architecto quidem ullam quia.';
+            $newCourse->course_unit = 3;
             if ($newCourse->save()) {
                 echo "$currentCourse saved! \r\n";
             }

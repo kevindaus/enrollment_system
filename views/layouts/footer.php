@@ -1,3 +1,9 @@
+<?php 
+use yii\helpers\Html;
+
+?>
+
+  
   <footer id="mu-footer">
     <!-- start footer top -->
     <div class="mu-footer-top hidden">
@@ -59,7 +65,14 @@
     <div class="mu-footer-bottom">
       <div class="container">
         <div class="mu-footer-bottom-area">
-          <p>&copy; All Right Reserved. Designed by <a href="http://www.markups.io/" rel="nofollow">MarkUps.io</a></p>
+          <p class="hidden">&copy; All Right Reserved. Designed by <a href="http://www.markups.io/" rel="nofollow">MarkUps.io</a></p>
+          <p >
+            &copy; All Right Reserved. <?= Yii::$app->name ?> 
+            <?php if (Yii::$app->user->isGuest): ?>
+               | <?= Html::a('Admin Area', '/login'); ?>
+            <?php endif ?>
+            
+          </p>
         </div>
       </div>
     </div>

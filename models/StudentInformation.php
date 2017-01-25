@@ -2,11 +2,12 @@
 
 namespace app\models;
 
+use FPDI;
 use Yii;
-use yii\base\ModelEvent;
 use yii\behaviors\TimestampBehavior;
-use yii\db\BaseActiveRecord;
 use yii\db\Expression;
+use yii\web\UploadedFile;
+
 
 /**
  * This is the model class for table "student_information".
@@ -15,7 +16,6 @@ use yii\db\Expression;
  * @property string $college_admission_test_number
  * @property string $official_receipt_number
  * @property string $date_taken
- * @property string $profile_image
  * @property string $application_status
  * @property string $is_first_time
  * @property string $is_first_time_location
@@ -47,11 +47,15 @@ use yii\db\Expression;
  * @property string $ethnic_origin
  * @property string $citizenship
  * @property string $signature_image
+ * @property string $student_picture
+ * @property string $requirement_certificate
+ * @property string $serial_number
  * @property string $created_at
  * @property string $updated_at
  */
 class StudentInformation extends \yii\db\ActiveRecord
 {
+    const NEW_STUDENT_REGISTERED = 'NEW_STUDENT_REGISTERED';
 
     /**
      * @inheritdoc
@@ -63,6 +67,7 @@ class StudentInformation extends \yii\db\ActiveRecord
 
     public static function findValedictoriansArr()
     {
+        /*high school*/        
         $sqlCommand = <<<EOL
         select student.*
         from student_information as student
@@ -76,6 +81,7 @@ EOL;
 
     public static function findSalutatoriansArr()
     {
+        /*high school*/        
         $sqlCommand = <<<EOL
         select student.*
         from student_information as student
@@ -90,12 +96,23 @@ EOL;
 
     public static function findAthletesArr()
     {
+        /*high school*/
         $sqlCommand = <<<EOL
         select student.*
         from student_information as student
         inner join educational_attainment as educ on educ.student_id = student.id
         inner join awards_received as awards on awards.education_attainment_id = educ.id
         where awards.awards_name = "athlete"
+        and educ.education = "Secondary"        
+EOL;
+        return Yii::$app->db->createCommand($sqlCommand)->queryAll();
+    }
+
+    public static function getAllEthnicity()
+    {
+        $sqlCommand = <<<EOL
+        select distinct student.ethnic_origin
+        from student_information as student
 EOL;
         return Yii::$app->db->createCommand($sqlCommand)->queryAll();
     }
@@ -106,10 +123,10 @@ EOL;
     public function rules()
     {
         return [
-            [['title', 'firstName', 'lastName','gender','age','civil_status','citizenship'], 'required'],
-            [['date_taken', 'birthday', 'created_at', 'updated_at', 'application_status', 'college_admission_test_number', 'official_receipt_number', 'is_first_time', 'is_first_time_location'], 'safe'],
+            [['title', 'firstName', 'lastName', 'gender', 'age', 'civil_status', 'citizenship', 'requirement_certificate'], 'required'],
+            [['requirement_certificate', 'student_picture', 'date_taken', 'birthday', 'created_at', 'updated_at', 'application_status', 'college_admission_test_number', 'official_receipt_number', 'is_first_time', 'is_first_time_location'], 'safe'],
             [['age'], 'number'],
-            [['college_admission_test_number', 'official_receipt_number', 'profile_image', 'application_status', 'is_first_time', 'is_first_time_location', 'title', 'firstName', 'middleName', 'lastName', 'phoneNumber', 'houseNumber', 'permanent_address_house_number', 'permanent_address_street', 'permanent_address_purok', 'permanent_address_barangay', 'permanent_address_town', 'permanent_address_province', 'permanent_address_postalCode', 'residential_address_house_number', 'residential_address_street', 'residential_address_purok', 'residential_address_barangay', 'residential_address_town', 'residential_address_province', 'residential_address_postalCode', 'place_of_birth', 'civil_status', 'gender', 'ethnic_origin', 'citizenship', 'signature_image'], 'string', 'max' => 255],
+            [['serial_number', 'college_admission_test_number', 'official_receipt_number', 'application_status', 'is_first_time', 'is_first_time_location', 'title', 'firstName', 'middleName', 'lastName', 'phoneNumber', 'houseNumber', 'permanent_address_house_number', 'permanent_address_street', 'permanent_address_purok', 'permanent_address_barangay', 'permanent_address_town', 'permanent_address_province', 'permanent_address_postalCode', 'residential_address_house_number', 'residential_address_street', 'residential_address_purok', 'residential_address_barangay', 'residential_address_town', 'residential_address_province', 'residential_address_postalCode', 'place_of_birth', 'civil_status', 'gender', 'ethnic_origin', 'citizenship', 'signature_image'], 'string', 'max' => 255],
         ];
     }
 
@@ -123,7 +140,6 @@ EOL;
             'college_admission_test_number' => 'College Admission Test Number',
             'official_receipt_number' => 'Official Receipt Number',
             'date_taken' => 'Date Taken',
-            'profile_image' => 'Profile Image',
             'application_status' => 'Application Status',
             'is_first_time' => 'Is first time',
             'is_first_time_location' => 'Place NVSU-CAT took place',
@@ -155,6 +171,7 @@ EOL;
             'ethnic_origin' => 'Ethnic Origin',
             'citizenship' => 'Citizenship',
             'signature_image' => 'Signature Image',
+            'serial_number' => 'Identification Number',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -174,12 +191,28 @@ EOL;
 
     public function beforeSave($insert)
     {
-        if($this->isNewRecord || $this->scenario == "update"){
+        if ($this->isNewRecord || $this->scenario == "update") {
             $this->date_taken = date("Y-m-d h:i:s", strtotime($this->date_taken));
             $this->birthday = date("Y-m-d h:i:s", strtotime($this->birthday));
         }
+        if ($this->isNewRecord) {
+            //generate serial number
+            do {
+                $this->serial_number = substr(uniqid(), -8);
+            } while (StudentInformation::find()->where(['serial_number' => $this->serial_number])->exists());
+            
+        }
         return parent::beforeSave($insert);
     }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($this->isNewRecord) {
+            $this->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
+        }
+        parent::afterSave($insert, $changedAttributes);
+    }
+
 
     public function beforeDelete()
     {
@@ -189,7 +222,7 @@ EOL;
          * @vara $currentAward AwardsReceived
          */
         foreach ($allEducationalAttainments as $currentEducationalAttainment) {
-            $allawards = AwardsReceived::find()->where(['education_attainment_id'=>$currentEducationalAttainment->id])->all();
+            $allawards = AwardsReceived::find()->where(['education_attainment_id' => $currentEducationalAttainment->id])->all();
             foreach ($allawards as $currentAward) {
                 $currentAward->delete();
             }
@@ -204,48 +237,103 @@ EOL;
      */
     public function geteducational_attainment()
     {
-        return $this->hasMany(EducationalAttainment::className(),['student_id'=>'id']);
+        return $this->hasMany(EducationalAttainment::className(), ['student_id' => 'id']);
     }
- 
-    public static function getMaleCount(){
+
+    public static function getMaleCount()
+    {
         return StudentInformation::find()->where([
-            'gender'=>'Male'
+            'gender' => 'Male'
         ])->count();
     }
-    public static function getFemaleCount(){
+
+    public static function getFemaleCount()
+    {
         return StudentInformation::find()->where([
-            'gender'=>'Female'
+            'gender' => 'Female'
         ])->count();
     }
+
     public function getPrefferedCourses()
     {
         /*get student courses*/
         $coursesCollection = [];
-        $pref =  StudentCourse::find()->where(['student_id'=>$this->id])->all();
+        $pref = StudentCourse::find()->where(['student_id' => $this->id])->all();
         foreach ($pref as $currentPref) {
             $coursesCollection[] = $currentPref->course;
         }
         return $coursesCollection;
     }
+
     public function getstudent_course()
     {
         return $this
             ->hasMany(StudentCourse::className(), ['student_id' => 'id'])
-            ->from(['student_course_2'=>StudentCourse::tableName()]);
+            ->from(['student_course_2' => StudentCourse::tableName()]);
 
     }
+
     public function getcourse()
     {
         return $this
-            ->hasMany(Course::className(), ['id' => 'student_id'])
-            ->viaTable('student_course', ['course_id' => 'id']);
+            ->hasMany(Course::className(), ['id' => 'course_id'])
+            ->viaTable('student_course', ['student_id' => 'id']);
     }
-    public function getawards_received(){
+
+    public function getawards_received()
+    {
         return $this
             ->hasMany(AwardsReceived::className(), ['id' => 'student_id'])
-            ->viaTable(EducationalAttainment::tableName(), ['student_id' => 'id'],function($q){
+            ->viaTable(EducationalAttainment::tableName(), ['student_id' => 'id'], function ($q) {
                 $q->from("educational_attainment ed2");
             });
+    }
+
+    /**
+     * @param $pdfTemplate
+     * @return FPDI
+     */
+    public function exportTestingPermit($pdfTemplate){
+        $exportedFile = '';
+        class_exists('TCPDF', true);
+        $pdf = new FPDI();
+        $pdf->addPage();
+        $pdf->SetFont("Helvetica",'',8);
+        $pdf->setSourceFile($pdfTemplate);
+        $tplIdx = $pdf->importPage(1);
+        $pdf->useTemplate($tplIdx, 0, 0, 0, 0, true);
+        $pdf->SetTextColor(0,0,0);
+        $pdf->SetXY(  50 , 33);
+        $pdf->Write( 0 , $this->serial_number);
+        $pdf->SetXY(  73 , 93.5);
+        $pdf->Write(0, sprintf("%s %s %s  %s",$this->title,$this->firstName ,$this->middleName,$this->lastName));
+        $pdf->SetXY(  103 , 98);
+        $pdf->Write(0, date("l jS \of F Y",time()). " 8:00 AM"  );//date
+        $pdf->SetXY(  35 , 106);
+        $pdf->Write(0, 'Testing Center');//time
+        return $pdf;
+
+    }
+
+    public function saveStudentPicture(UploadedFile $uploadedFile)
+    {
+        //get photo name
+        $uploadedImagesPath = Yii::getAlias('@app/uploads/student_pictures');
+        //rename photoname using format Y_m_d_title_firstname_middlename_lastname_random
+        $finalImagename = sprintf("%s_%s_%s_%s_%s_%s.%s", date("Y_m_d"), $this->title, $this->firstName, $this->middleName, $this->lastName, uniqid(),$uploadedFile->extension);
+        $uploadedFile->saveAs($uploadedImagesPath .DIRECTORY_SEPARATOR. $finalImagename);
+        $this->student_picture = $finalImagename;
+        return $uploadedImagesPath .DIRECTORY_SEPARATOR. $finalImagename;
+    }
+
+    public function saveStudentCeritificateRequirement(UploadedFile $uploadedFile)
+    {
+        $uploadedImagesPath = Yii::getAlias('@app/uploads/certificates');
+        //rename photoname using format Y_m_d_title_firstname_middlename_lastname_serialNumber
+        $finalImagename = sprintf("%s_%s_%s_%s_%s_%s.%s", date("Y_m_d"), $this->title, $this->firstName, $this->middleName, $this->lastName, uniqid(),$uploadedFile->extension);
+        $uploadedFile->saveAs($uploadedImagesPath .DIRECTORY_SEPARATOR. $finalImagename);
+        $this->requirement_certificate = $finalImagename;
+        return $uploadedImagesPath .DIRECTORY_SEPARATOR. $finalImagename;
     }
 
 }

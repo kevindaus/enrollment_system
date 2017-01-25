@@ -45,4 +45,13 @@ class StudentCourse extends \yii\db\ActiveRecord
             'course_id' => 'Course ID',
         ];
     }
+    public function getcourse()
+    {
+        return $this->hasOne(Course::className(),['id'=>'course_id']);
+    }
+    public function getstudent()
+    {
+        return $this->hasOne(StudentInformation::className(), ['id' => 'student_id']);
+
+    }
 }

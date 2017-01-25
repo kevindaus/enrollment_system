@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "educational_attainment".
@@ -22,6 +23,17 @@ class EducationalAttainment extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'educational_attainment';
+    }
+
+    public static function getAllSchools()
+    {
+        $allSchoolsDataCollection = [];
+        $allSchoolsDataCollection = ArrayHelper::merge($allSchoolsDataCollection ,EducationalAttainment::getAllElementarySchool());
+        $allSchoolsDataCollection = ArrayHelper::merge($allSchoolsDataCollection ,EducationalAttainment::getAllHighSchool());
+        $allSchoolsDataCollection = ArrayHelper::merge($allSchoolsDataCollection ,EducationalAttainment::getAllTertiarySchool());
+        $allSchoolsDataCollection = ArrayHelper::merge($allSchoolsDataCollection ,EducationalAttainment::getAllVocationalSchool());
+
+        return $allSchoolsDataCollection;
     }
 
     /**

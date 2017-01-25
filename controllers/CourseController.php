@@ -15,6 +15,7 @@ use yii\filters\VerbFilter;
  */
 class CourseController extends Controller
 {
+    public $layout = 'dashboard_layout';
     /**
      * @inheritdoc
      */
@@ -44,14 +45,27 @@ class CourseController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+    public function actionAll()
+    {
+        $this->layout = 'main';
+        $dataprovider = new \yii\data\ActiveDataProvider([
+            'query' => Course::find()
+        ]);
+        return $this->render('all', [
+            'dataprovider' => $dataprovider
+        ]);
+    }
     public function actionDetails($courseName)
     {
-        $foundCourse = \app\models\Course::find()->where(['name'=>$courseName]);
-        if ($foundCourse) {
-
-        } else {
+        $this->layout = "main";
+        $courseName = str_replace('-', ' ', $courseName);
+        $foundCourse = \app\models\Course::find()->where(['course_name'=>$courseName])->one();
+        if (!$foundCourse) {
             throw new HttpException(404,"Course doesn't exists");
         }
+        return $this->render('details', [
+            'model' => $foundCourse,
+        ]);
     }
 
     /**

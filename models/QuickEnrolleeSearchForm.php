@@ -30,10 +30,11 @@ class QuickEnrolleeSearchForm extends Model
     {
         return StudentInformation::find()
             ->where([
-                'firstName'=>$this->searchKey
+                'firstName'=>$this->searchKey,
             ])
             ->orWhere(['middleName'=>$this->searchKey])
             ->orWhere(['lastName'=>$this->searchKey])
+            ->orWhere(['serial_number'=>$this->searchKey])
             ->all();
     }
 

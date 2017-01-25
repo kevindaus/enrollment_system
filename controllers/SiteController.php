@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\form\StudentLoginForm;
+use app\models\StudentInformation;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -42,28 +44,28 @@ class SiteController extends Controller
             ],
         ];
     }
-    public function actionTest()
+    public function actionTemplate()
     {
-        $expirationDate = strtotime("+1 hour");
-        $newCookie = new Cookie();
-        $newCookie->name = "student_id_test1";
-        $newCookie->value = 15;
-        var_dump($expirationDate);
-        die;
-        Yii::$app->response->cookies->add($newCookie);
-        var_dump(Yii::$app->request->cookies->get("student_id_test1"));
+        /**
+         * @var $testStudent StudentInformation
+         */
+        $testStudent = StudentInformation::find()->one();
+        $pdfTemplate = Yii::getAlias("@app/template_docs".DIRECTORY_SEPARATOR .'College Admission Examinaion Permit.pdf');
+        $exportedFilePath = $testStudent->exportTestingPermit($pdfTemplate);
+        /*@TODO */
+//        Yii::$app->response->xSendFile($exportedFilePath);
     }
     public function actionReminder()
     {
         return $this->render('reminder');
-    }
+    }    
 
     public function actionIndex()
     {
-        // todo
+        $availableCourses =\app\models\Course::find()->all(); 
         $numberOfCourses = \app\models\Course::find()->count();
         $signedUpStudents = \app\models\StudentInformation::find()->count();
-        return $this->render('index',compact('numberOfCourses','signedUpStudents'));
+        return $this->render('index',compact('numberOfCourses','signedUpStudents','availableCourses'));
     }
 
     public function actionLogin()

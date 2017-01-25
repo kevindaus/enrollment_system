@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use app\helpers\DatasourceTransformer;
 use app\models\AwardsReceived;
+use app\models\dataproviders\TestScheduleDataProvider;
 use app\models\EducationalAttainment;
 use app\models\FilterEnrolleForm;
 use app\models\QuickEnrolleeSearchForm;
@@ -13,6 +15,8 @@ use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
 use yii\web\HttpException;
+use yii2fullcalendar\models\Event;
+use yii2fullcalendar\yii2fullcalendar;
 
 class DashboardController extends \yii\web\Controller
 {
@@ -34,6 +38,7 @@ class DashboardController extends \yii\web\Controller
     }
     public function actionIndex()
     {
+        $this->layout = "dashboard_layout";
         $todaysEnrollees = StudentInformation::find()
             ->limit(10)
             ->where(['date(created_at)'=>date("Y-m-d")])
@@ -41,9 +46,10 @@ class DashboardController extends \yii\web\Controller
         $enroleeDataProvider = new ActiveDataProvider([
             'query'=>  $todaysEnrollees,
         ]);
+
+
         $maleCount = StudentInformation::getMaleCount();
         $femaleCount = StudentInformation::getFemaleCount();
-
 
         $valedictoriansDataProvider  = new ArrayDataProvider([
             'allModels'=>  StudentInformation::findValedictoriansArr(),
@@ -55,7 +61,7 @@ class DashboardController extends \yii\web\Controller
             'allModels'=>  StudentInformation::findAthletesArr(),
         ]);
 
-        $courseDistributionDatasource = Course::getCourseDistribution();
+        $courseEnrolleeDataProvider = Course::getCourseEnrolleeDataProvider();
 
         $searchEnrolleeForm = new QuickEnrolleeSearchForm();
         $foundEnrollees = null;
@@ -71,7 +77,7 @@ class DashboardController extends \yii\web\Controller
             'foundEnrollees',
             'maleCount',
             'femaleCount',
-            'courseDistributionDatasource',
+            'courseEnrolleeDataProvider',
             'valedictoriansDataProvider',
             'salutatoriansDataProvider',
             'athletesDataProvider'
@@ -79,13 +85,34 @@ class DashboardController extends \yii\web\Controller
     }
     public function actionEnrollee()
     {
+        /*datasources for autocomplete*/
+        $allSchools = EducationalAttainment::getAllSchools();
+        $allSchools = DatasourceTransformer::transformSchoolCollection($allSchools);
+        $allSchools = count($allSchools) === 0 ? []:$allSchools;
+        $allEthnicity = StudentInformation::getAllEthnicity();
+        $allEthnicity = DatasourceTransformer::transformEthnicityCollection($allEthnicity);
+        $allEthnicity = count($allEthnicity) === 0 ? []:$allEthnicity;
+        $allAwards = AwardsReceived::getAllAchievements();
+        $allAwards = count($allAwards) === 0 ? []:$allAwards;
+        $allCourses = Course::getAllAvailableCourses();
+
+        $allCourses = count($allCourses) === 0 ? []:$allCourses;
+        /*end of datasources*/
         $filterForm = new FilterEnrolleForm();
         $queryModel = StudentInformation::find();
         if ($filterForm->load(\Yii::$app->request->post())) {
             $queryModel = $filterForm->getFilterQuery();
         }
         $enroleeDataProvider = new ActiveDataProvider(['query'=>$queryModel]);
-        return $this->render('enrollee',compact('enroleeDataProvider','queryModel','filterForm'));
+        return $this->render('enrollee',compact(
+                'enroleeDataProvider',
+                'queryModel',
+                'filterForm',
+                'allSchools',
+                'allEthnicity',
+                'allAwards',
+                'allCourses'
+            ));
     }
 
 

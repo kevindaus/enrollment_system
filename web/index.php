@@ -4,8 +4,8 @@
  * y14gK38T6JAb7cH
  */
 
-error_reporting(E_ALL);
-ini_set("display_errors", true);
+// error_reporting(E_ALL);
+// ini_set("display_errors", true);
 
 defined('YII_DEBUG') or define('YII_DEBUG',true);
 defined('YII_ENV') or define('YII_ENV', 'dev');

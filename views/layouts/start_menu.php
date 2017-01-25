@@ -8,14 +8,14 @@ use app\assets\AppAsset;
 $navItems = [
   ['label' => 'Home', 'url' => ['/site/index']],
   ['label' => 'Enroll', 'url' => ['/enroll']],
+  ['label' => 'Reminder', 'url' => ['/reminder']],
   ['label' => 'Dashboard', 'url' => ['/dashboard'] , 'visible'=> \Yii::$app->user->can('admin') ]
 ];
-if (Yii::$app->user->isGuest) {
-  $navItems[] =  ['label' => 'Login', 'url' => ['/login'] , 'visible'=> Yii::$app->user->isGuest ];
-}else {
+
+$navItems[] =  ['label' => 'Search', 'url' => ['/student-login']];
+if (!Yii::$app->user->isGuest) {
   $navItems[] =  ['label' => "Logout (".Yii::$app->user->identity->username.")", 'url' => ['/logout'] , 'visible'=> !Yii::$app->user->isGuest ];
 }
-
 ?>
   <section id="mu-menu">
     <nav class="navbar navbar-default" role="navigation">  

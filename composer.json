@@ -25,13 +25,22 @@
         "kartik-v/yii2-widget-typeahead": "*",
         "kartik-v/yii2-widget-select2": "@dev",
         "miloschuman/yii2-highcharts-widget": "*",
-        "hscstudio/yii2-chart": "~1.0"
+        "hscstudio/yii2-chart": "~1.0",
+        "kartik-v/yii2-widget-fileinput": "@dev",
+        "fzaninotto/faker": "^1.6",        
+        "tecnickcom/tcpdf": "^6.2",
+        "dompdf/dompdf": "^0.7.0",
+        "setasign/fpdi": "^1.6",
+        "philippfrenzel/yii2fullcalendar":"*",
+        "kartik-v/yii2-editable": "@dev",
+        "2amigos/yii2-ckeditor-widget": "^2.0"
     },
     "require-dev": {
+        "codeception/specify": "*",
+        "codeception/verify": "*",        
         "yiisoft/yii2-codeception": "*",
         "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*",
-        "yiisoft/yii2-faker": "*"
+        "yiisoft/yii2-gii": "*"
     },
     "config": {
         "process-timeout": 1800
@@ -44,7 +53,10 @@
     "autoload": {
         "files": [
             "helpers/env.php"
-        ]
+        ],
+        "psr-4":{
+            "app\\helpers\\":"app/helpers"
+        }
     },
     "extra": {
         "yii\\composer\\Installer::postCreateProject": {

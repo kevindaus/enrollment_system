@@ -9,28 +9,36 @@ use yii\grid\GridView;
 $this->title = 'Courses';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="course-index">
+<br>
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <strong>Available Courses</strong>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <div class="course-index">
+            <p>
+                <?= Html::a('Create Course', ['create'], ['class' => 'btn btn-success pull-right']) ?>
+            </p>
+            <div class="clearfix"></div>
 
-    <p>
-        <?= Html::a('Create Course', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+                    'id:ntext',
+                    'course_name:ntext',
+                    'course_description:ntext',
+                    // 'created_at',
+                    // 'updated_at',
 
-            'id',
-            'name',
-            'description:ntext',
-            'unit',
-            'outline:ntext',
-            // 'created_at',
-            // 'updated_at',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+                    ['class' => 'yii\grid\ActionColumn'],
+                ],
+            ]); ?>
+        </div>
+    </div>
 </div>
+

@@ -10,9 +10,9 @@ namespace app\models;
 
 
 use yii\base\Model;
-use yii\db\Query;
 
 class FilterEnrolleForm  extends Model{
+    public $serial_number;
     public $name;
     public $gender;
     public $address;
@@ -27,27 +27,32 @@ class FilterEnrolleForm  extends Model{
     public function rules()
     {
         return [
-            [['name' ,'gender' ,'address' ,'ethnic_origin','civil_status' ,'age' ,'course','school_graduated','award'], 'safe'],
+            [['name' ,'serial_number','gender' ,'address' ,'ethnic_origin','civil_status' ,'age' ,'course','school_graduated','award'], 'safe'],
+        ];
+    }
+    public function attributeLabels()
+    {
+        return [
+            'serial_number'=>'Identification Number'
         ];
     }
 
     public function getFilterQuery()
     {
         $query = StudentInformation::find();
-        $query->innerJoinWith(EducationalAttainment::tableName(),['student_information.id = educational_attainment.student_id']);
-        $query->innerJoinWith(StudentCourse::tableName(),['student_course.student_id = student_information.id']);
-        $query->innerJoinWith(Course::tableName(),['student_course.course_id = course.id']);
-        $query->innerJoinWith(AwardsReceived::tableName(),['educational_attainment.id = awards_received.education_attainment_id']);
 
         if (isset($this->name) && !empty($this->name)) {
             $query->andWhere([
                 'OR',
-                ['firstName'=>$this->name],
-                ['lastName'=>$this->name]
+                ['like','firstName',$this->name],
+                ['like','lastName',$this->name]
             ]);
         }
         if (isset($this->gender) && !empty($this->gender)) {
             $query->andWhere(['gender' => $this->gender]);
+        }
+        if (isset($this->serial_number) && !empty($this->serial_number)) {
+            $query->andWhere(['serial_number' => $this->serial_number]);
         }
         if (isset($this->address) && !empty($this->address)) {
             $query->andFilterWhere([
@@ -69,7 +74,6 @@ class FilterEnrolleForm  extends Model{
                 ['like','residential_address_postalCode' , $this->address]
             ]);
         }
-
         if (isset($this->ethnic_origin) && !empty($this->ethnic_origin)) {
             $query->andWhere(['ethnic_origin' => $this->ethnic_origin]);
         }
@@ -77,21 +81,27 @@ class FilterEnrolleForm  extends Model{
             $query->andWhere(['civil_status' => $this->civil_status]);
         }
        if (isset($this->school_graduated) && !empty($this->school_graduated)) {
+           $query->innerJoinWith(EducationalAttainment::tableName(),['student_information.id = educational_attainment.student_id']);
             $query->andFilterWhere([
                 'OR',
                 ['like','educational_attainment.name_of_school' , $this->school_graduated]
             ]);
+
        }
        if (isset($this->course) && !empty($this->course)) {
+            $query->innerJoinWith(StudentCourse::tableName(),['student_course.student_id = student_information.id']);
+            $query->innerJoinWith(Course::tableName(),['student_course.course_id = course.id']);
             $query->andFilterWhere([
-                'AND',
+                'OR',
                 ['like','course.course_name' , $this->course]
             ]);
+           $query->groupBy(["student_information.id"]);
        }
-
        if (isset($this->award) && !empty($this->award)) {
+           $query->innerJoinWith(AwardsReceived::tableName(),['educational_attainment.id = awards_received.education_attainment_id']);
+           $query->innerJoinWith(EducationalAttainment::tableName(),['student_information.id = educational_attainment.student_id']);
            $query->andFilterWhere([
-               'AND',
+               'OR',
                ['like','awards_received.awards_name' , $this->award]
            ]);
            $query->addGroupBy(["awards_received.awards_name"]);

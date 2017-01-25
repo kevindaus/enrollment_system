@@ -24,7 +24,6 @@ class m161013_203015_create_student_information_table extends Migration
             'college_admission_test_number' => $this->string(),//should be auto generated
             'official_receipt_number' => $this->string(),//should be auto generated
             'date_taken' => $this->dateTime(),//default to date today
-            'profile_image' => $this->string(),//name of profile image file
             'application_status' => $this->string(),//[New Student , Old Student , Transferee]
             'is_first_time' => $this->string(),//[Yes, No]
             'is_first_time_location' => $this->string(),// [Bayombong , Bambang]

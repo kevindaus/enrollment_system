@@ -3,12 +3,15 @@
 namespace app\models;
 
 use Yii;
+use yii\data\ArrayDataProvider;
 
 /**
  * This is the model class for table "course".
  *
  * @property integer $id
  * @property string $course_name
+ * @property string $course_description
+ * @property string $course_unit
  */
 class Course extends \yii\db\ActiveRecord
 {
@@ -39,7 +42,8 @@ class Course extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['course_name'], 'string', 'max' => 255],
+            [['course_name','course_description'], 'string', 'max' => 255],
+            [['course_unit'], 'integer'],
         ];
     }
 
@@ -50,19 +54,31 @@ class Course extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'course_name' => 'Course Name',
+            'course_name' => 'Name',
+            'course_description' => 'Description',
+            'course_unit' => 'Units',
         ];
     }
 
-    public static function getCourseDistribution()
+    public static function getCourseEnrolleeDataProvider()
     {
         /*get total */
-        $sqlCommand = <<<EOL
-        SELECT course.course_name,count(course.id)  as course_count
-        FROM course
-        inner join student_course on student_course.course_id = course.id
-        group by course.course_name
-EOL;
-        return \Yii::$app->db->createCommand($sqlCommand)->queryAll();
+        //get all course
+        $allCourses = Course::find()->all();
+        $arrayData = [];
+        foreach ($allCourses as $currentCourse) {
+            /**
+             * @var $currentCourse Course
+             */
+            $currentEnrolleeOnCourse = StudentCourse::find()->where(['course_id'=>$currentCourse->id])->groupBy(['student_id'])->count();
+            $arrayData[] = [
+                'course' =>$currentCourse->course_name,
+                'enrollee_count' =>$currentEnrolleeOnCourse
+            ];
+        }
+        $arrayDataProvider = new ArrayDataProvider();
+        $arrayDataProvider->pagination = false;
+        $arrayDataProvider->allModels = $arrayData;
+        return $arrayDataProvider;
     }
 }

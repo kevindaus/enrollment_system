@@ -1,0 +1,156 @@
+
+upload 
+picture
+* 2x2
+* Transcsript of record
+* ALS ceretificate
+@DONE
+
+
+@TODO - save image for student image and basic requirements
+@DONE
+
+
+generate serial number/character
+after enrollment
+use personalIdentityNumber of Faker
+@DONE
+
+
+@TODO - present uploaded image by enrolle when viewing student informatin 
+student_image and certification requirement
+@DONE
+
+
+@DONE
+New Page
+List of requirements
+/reminder
+@DONE
+
+
+
+
+@TODO - after login , allow user to view and download printable pdf
+
+AFter submit 
+generate printable PDF 
+that can be printed by student enrolledd
+@DONE
+
+@TODO - set serial key for them to retrieve it anytime
+continue thhis
+http://localhost:8080/student-login
+@DONE
+
+@TODO - NewEnrolleeRegisteredEventHandler
+
+
+@TODO - after login , allow user to view his/her schedule
+
+
+
+
+@TODO - assign student a schedule for
+entrance exam test
+
+
+
+
+
+
+verfication of code for admin. 
+validate student information
+@DONE
+
+
+
+using verification code 
+student can login 
+to check chedule of exam
+@DONE
+
+
+Main Feature
+-algorithm : using ID modulus by 50 if zero . then use next schedule. 
+system  : schedule student exam
+every 50 student
+form starting point 
+every 50 student per day
+@DONE
+
+
+@TODO-
+backend . each student has examination date . 
+new table : 
+examination_log
+id
+student_id
+examination_date
+create_at
+updated_at
+@DONE
+
+@TODO - administer examination log
+@DONE
+
+
+@TODO
+backend : after save . 
+check record of examination log for last date. 
+if no record 
+	use the current date 
+else if last examination is found 
+	if (serial_number % 50) is zero
+		examination date + 1 day
+	else
+		use the last examination date
+
+
+
+
+
+@TODO - 
+unit test for , 
+NewEnrolleeRegisteredEventHandler
+-test if af
+@DONE 
+
+
+@TODO
+when the link is clicked , it will show the list of students that would take the test
+@DONE
+
+
+
+when searching for enroollee
+include also the field security_key
+show date and number of students to take the test
+@DONE
+
+
+
+@TODO - 
+FIX BUG , the date of test must be greater than 
+today . The examination should be future date. 
+
+
+
+@TODO 
+-webcam screenshot instead of manual image upload
+
+
+@TODO 
+manage course
+
+@TODO - show course and descriptionindex
+
+
+
+
+@TODO - signature panel ? 
+
+@TODO - admin activity log for 
+student registration authentication and approval
+
+Our Online student enrollment system enables students to enroll into their subjects prior to the commencement of their semesters. This enrollment system not only allows international students to enroll through internet without traveling to the campus but also incorporates the business rules. These business rules cover a wide range of regulations and policy such as subject pre-requisite, student's payment status, course coordinator's decision and the correspondence of students' seniority to the intended enrolling subjects. Besides business rules, the system also incorporates various notification mechanisms like Short Messaging Service (SMS) and Email. XML is used to store the business rules and thus allow the portability of the system interface to wider range of devices such as Personal Device Assistant (PDA). The interface auto-detects the user's device either PC/laptop or much smaller screen device such as PDA. In short, the enrollment system backend engine runs based on the business rules and front-end engine runs to provide high satisfaction user experience. With the business and user interface, the system is able to run the workflow of student enrollment from the online enrollment form to approval workflow cycle running parallel with the notification capability.
