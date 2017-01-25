@@ -92,6 +92,8 @@ class EnrollController extends Controller
                     $newStudent->save();
                     //attach event handlers
                     $newStudent->on(StudentInformation::NEW_STUDENT_REGISTERED, [new NewEnrolleeRegisteredEventHandler(), 'handle'], $newStudent);
+                    $newStudent->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
+
 
                     /*save student educational attainment*/
                     if ($elementaryEducationalAttainment->load(Yii::$app->request->post()) && $elementaryEducationalAttainment->save()) {

@@ -43,14 +43,18 @@ class NewEnrolleeRegisteredEventHandler {
                 //next examination date , make sure its not weekend and not friday
                 do{
                     $examinationDate->add(new \DateInterval("P1D"));
-                }while(in_array($examinationDate->format("l"),['Friday','Saturday','Sunday']));
+
+                    //should be on fridays and Sat , and the date must be in the future
+                    $dtToday= new \DateTime();
+                }while( !($examinationDate  <  $dtToday )  || in_array($examinationDate->format("l"),['Friday','Saturday','Sunday']));
             }
         }
         $examLog = new ExaminationLog();
         $examLog->student_id = $model->id;
-        \Yii::warning('wee'.$model->id);
+
+        // \Yii::warning('wee'.$model->id);
         $examLog->examination_date = $examinationDate->format("Y-m-d");
-        \Yii::warning('wee'.$examLog->examination_date);
+        // \Yii::warning('wee'.$examLog->examination_date);
 
         if(!$examLog->save()){
             throw new Exception("Cant create new examination schedule");
