@@ -37,16 +37,14 @@ class TestScheduleDataProvider extends Component{
         foreach ($dateRange as $currentDate) {
             if( !in_array($currentDate->format("l"),['Friday','Saturday','Sunday']) ){
                 /*allowed dates only*/
-                $numOfExamineesToday = ExaminationLog::find()->where(['date(created_at)'=>$currentDate->format("Y-m-d")])->count();
+                $numOfExamineesToday = ExaminationLog::find()->where(['date(examination_date)'=>$currentDate->format("Y-m-d")])->count();
                 $calendarEventObj = new $this->model_class();
                 $calendarEventObj->id = uniqid();
-                $calendarEventObj->description = 'wee';
+                $calendarEventObj->description = 'Examinee : '.$numOfExamineesToday;
                 $calendarEventObj->title = 'Examinee : '.$numOfExamineesToday;
-                $calendarEventObj->start = $currentDate->format('Y-m-d');
-                $calendarEventObj->end = $currentDate->format('Y-m-d');
-                $calendarEventObj->description = "Something nice";
+                $calendarEventObj->start = $currentDate->format('Y-m-d\TH:i:sO');
+                $calendarEventObj->end = $currentDate->format('Y-m-d\TH:i:sO');
                 $collection[] = $calendarEventObj;
-
             }
         }
         return $collection;

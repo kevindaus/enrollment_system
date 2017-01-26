@@ -113,7 +113,7 @@ use yii\widgets\Menu;
 									},
 									'header'=>'Name',
 								],
-								'phoneNumber',
+								'serial_number',
 								'gender',
 								'civil_status',
 					            [

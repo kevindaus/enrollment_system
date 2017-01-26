@@ -32,6 +32,14 @@ $this->params['breadcrumbs'][] = 'Exam Schedule';
                             return sprintf("%s %s %s",$studentModel->title , $studentModel->firstName,$studentModel->lastName);
                         }
                     ],
+                    [
+                        'label' => 'Exam Time',
+                        'format'    => 'raw',
+                        'value'     => function ($model, $key, $index, $column) {
+                            $studentModel = $model->getStudent();
+                            return date("h:i A" , strtotime($model->examination_date));
+                        }
+                    ],                    
                 ]
             ]);?>
         </div>

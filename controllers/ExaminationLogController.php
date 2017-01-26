@@ -45,15 +45,14 @@ class ExaminationLogController extends Controller
     {
         /*returns list of student that will take exam on given date*/
         $dataCollection = new ActiveDataProvider([
-            'query'=>ExaminationLog::find()->where(['date(created_at)'=>$date])
+            'query'=>ExaminationLog::find()->where(['date(examination_date)'=>$date])
         ]);
         return $this->render('schedule', compact('dataCollection','date'));
     }
     public function actionJson($start,$end)
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $testScheduleDataProvider = new TestScheduleDataProvider();
+            $testScheduleDataProvider = new TestScheduleDataProvider();
         $testScheduleDataProvider->start = \DateTime::createFromFormat("Y-m-d", $start);
         $testScheduleDataProvider->start->setTime(8, 0, 0);
         $testScheduleDataProvider->end = \DateTime::createFromFormat("Y-m-d", $end);
@@ -61,7 +60,6 @@ class ExaminationLogController extends Controller
         $testScheduleDataProvider->model_class = \yii2fullcalendar\models\Event::className();
         $testScheduleCollection = $testScheduleDataProvider->getScheduledExams();
         return $testScheduleCollection;
-//        return JSon::encode($examSchedule);
     }
     /**
      * Lists all ExaminationLog models.

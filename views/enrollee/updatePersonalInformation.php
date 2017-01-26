@@ -42,7 +42,7 @@ use yii\widgets\Menu;
 		<?php if (Yii::$app->session->hasFlash('success')): ?>
 			<div class="alert alert-success">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				<strong>Success!</strong> <?= Yii::$app->session->getFlash('success') ?>
+				<?= Yii::$app->session->getFlash('success') ?>
 			</div>
 		<?php endif ?>
 		<div class="panel panel-info">
