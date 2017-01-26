@@ -30,31 +30,47 @@ class NewEnrolleeRegisteredEventHandler {
          */
         $model = $event->data;
         /*@compute and create examination schedule*/
-        $lastExamLog = ExaminationLog::find()->orderBy('id DESC')->one();
+        $lastExamLog = ExaminationLog::find()->orderBy(['id'=>SORT_DESC])->one();
         $examinationDate = new \DateTime();//defaults to today
+         $dtToday = new \DateTime();
         if($lastExamLog){
             //compute the next examination date.
-            $tempContainer = explode(" ", $lastExamLog->examination_date);
-            \Yii::warning($tempContainer[0] . 'wee');
-            $examinationDate = \DateTime::createFromFormat("Y-m-d",$tempContainer[0]);
-            //accomodate only max_allowed_student_test_center = 50 , 50 test takers at a time or per day
-            // TODO : question : is this 50 a day... or 50 at AM , then 50 at PM?
-            if(  intval($model->id) % \Yii::$app->params['max_allowed_student_test_center'] === 0 ){
-                //next examination date , make sure its not weekend and not friday
-                do{
-                    $examinationDate->add(new \DateInterval("P1D"));
+            $tempContainer = strtotime($lastExamLog->examination_date);
+            $examinationDate = \DateTime::createFromFormat("Y-m-d H:i:s", date("Y-m-d H:i:s",$tempContainer)  );
 
-                    //should be on fridays and Sat , and the date must be in the future
-                    $dtToday= new \DateTime();
-                }while( !($examinationDate  <  $dtToday )  || in_array($examinationDate->format("l"),['Friday','Saturday','Sunday']));
+            //accomodate only max_allowed_student_test_center = 50 , 50 test takers at a time or per day
+            while( ( $examinationDate  <=  $dtToday )  || in_array($examinationDate->format("l"),['Friday','Saturday','Sunday'])){
+                    $examinationDate->add(new \DateInterval("P1D"));
+            }
+            if(  intval($lastExamLog->id) % \Yii::$app->params['max_allowed_student_test_center'] === 0 ){
+                \Yii::warning(PHP_EOL.PHP_EOL."Changing batch , " . $model->id);
+                \Yii::warning("Date is  " . $examinationDate->format("Y-m-d H:i:s"));
+                if ( $examinationDate->format("h:i A") == "07:30 AM" ) {
+                    // if 07:30 AM , then set time to 9:30 AM
+                    $examinationDate->setTime(9, 30, 0);
+                } else if( $examinationDate->format("h:i A") == "09:30 AM" ){
+                    // else if 09:30 AM , then set time to 1:30 PM
+                    $examinationDate->setTime(13, 30, 0);
+                } else if ($examinationDate->format("h:i A") == "01:30 PM"){
+                    // else if 01:30 PM , then set time to 7:30 AM
+                    $examinationDate->add(new \DateInterval("P1D"));
+                    $examinationDate->setTime(7, 30, 0);
+                } else {
+                    // else default to 7:30 AM
+                    $examinationDate->setTime(7, 30, 0);
+                }
+                \Yii::warning("Date is now " . $examinationDate->format("Y-m-d H:i:s"));
+            }
+        }
+        else {
+            while( ($examinationDate < $dtToday ||  $examinationDate->format("Y-m-d") ===   $dtToday->format("Y-m-d")) || in_array($examinationDate->format("l"),['Friday','Saturday','Sunday'])){
+                $examinationDate->add(new \DateInterval("P1D"));
+                $examinationDate->setTime(7, 30, 0);
             }
         }
         $examLog = new ExaminationLog();
         $examLog->student_id = $model->id;
-
-        // \Yii::warning('wee'.$model->id);
-        $examLog->examination_date = $examinationDate->format("Y-m-d");
-        // \Yii::warning('wee'.$examLog->examination_date);
+        $examLog->examination_date = $examinationDate->format("Y-m-d H:i:s");
 
         if(!$examLog->save()){
             throw new Exception("Cant create new examination schedule");

@@ -154,3 +154,13 @@ manage course
 student registration authentication and approval
 
 Our Online student enrollment system enables students to enroll into their subjects prior to the commencement of their semesters. This enrollment system not only allows international students to enroll through internet without traveling to the campus but also incorporates the business rules. These business rules cover a wide range of regulations and policy such as subject pre-requisite, student's payment status, course coordinator's decision and the correspondence of students' seniority to the intended enrolling subjects. Besides business rules, the system also incorporates various notification mechanisms like Short Messaging Service (SMS) and Email. XML is used to store the business rules and thus allow the portability of the system interface to wider range of devices such as Personal Device Assistant (PDA). The interface auto-detects the user's device either PC/laptop or much smaller screen device such as PDA. In short, the enrollment system backend engine runs based on the business rules and front-end engine runs to provide high satisfaction user experience. With the business and user interface, the system is able to run the workflow of student enrollment from the online enrollment form to approval workflow cycle running parallel with the notification capability.
+
+
+on schedule 
+at 1 hhours 30 minutes
+
+
+
+@TODo 
+fix the calendar 
+make sure to include time too

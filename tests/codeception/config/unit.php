@@ -14,7 +14,7 @@ $tempContainer = \yii\helpers\ArrayHelper::merge(
         'components'=>[
             'db'=>[
                 'class' => 'yii\db\Connection',
-                'dsn' => "mysql:host=localhost;dbname=enrollment",
+                'dsn' => "mysql:host=localhost;dbname=enrollment_sys",
                 'username' => "root",
                 'password' => "",
                 'charset' => 'utf8',
