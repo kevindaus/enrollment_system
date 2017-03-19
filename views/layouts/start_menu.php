@@ -30,7 +30,7 @@ if (!Yii::$app->user->isGuest) {
           </button>
           <!-- LOGO -->              
           <!-- TEXT BASED LOGO -->
-          <a class="navbar-brand" href="index.html"><i class="fa fa-university"></i><span><?= Yii::$app->name ?></span></a>
+          <a class="navbar-brand" href="/"><i class="fa fa-university"></i><span><?= Yii::$app->name ?></span></a>
           <!-- IMG BASED LOGO  -->
           <!-- <a class="navbar-brand" href="index.html"><img src="assets/img/logo.png" alt="logo"></a> -->
         </div>

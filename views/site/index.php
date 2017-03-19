@@ -22,11 +22,13 @@ $this->title = 'Welcome to NVSU Enrollment System';
         </figure>
       </div>
       <div class="mu-slider-content">
-        <h2>Welcome</h2>
-        <p>
-          Nueva Vizcaya State University is a public university in the Philippines. 
-        </p>
-        <a href="<?= Url::to('/enroll') ?> " class="mu-read-more-btn">Enroll Now!</a>
+        <h2>
+            Welcome to Nueva Vizcaya State University Online Application
+        </h2>
+        <h3>
+          for College Entrance Examination
+        </h3>
+        <a href="<?= Url::to('/enroll') ?> " class="mu-read-more-btn">Apply Now!</a>
       </div>
     </div>
     <!-- Start single slider item -->
@@ -44,7 +46,7 @@ $this->title = 'Welcome to NVSU Enrollment System';
               <span class="fa fa-book"></span>
               <h3>Enroll Now</h3>
               <p>
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis, deleniti dolorem exercitationem praesentium, est!
+NVSU offers the quality education needed by the students to meet the competitive global standards.              
               </p>
             </div>
             <!-- Start single service -->
@@ -53,7 +55,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis, delen
               <span class="fa fa-users"></span>
               <h3>Great Teachers</h3>
               <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis, deleniti dolorem exercitationem praesentium, est!
+                The NVSU faculty and staff are accomplished experts and leaders in their fields and professions
+
               </p>
             </div>
             <!-- Start single service -->
@@ -62,8 +65,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis, delen
               <span class="fa fa-table"></span>
               <h3>Great Facilities</h3>
               <p>
-
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis, deleniti dolorem exercitationem praesentium, est!
+              Efficiency, the university is committed to provide excellent service towards its constituents.
               </p>
             </div>
             <!-- Start single service -->
@@ -89,15 +91,33 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis, delen
                     <h2>About Us</h2>              
                   </div>
                   <!-- End Title -->
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum pariatur fuga eveniet soluta aspernatur rem, nam voluptatibus voluptate voluptates sapiente, inventore. Voluptatem, maiores esse molestiae.</p>
+                  <p>
+
+                    The Nueva Vizcaya State University is a historical metamorphosis of two entities merged to form a stronger academic alliance in Cagayan Valley. It has two campuses formerly known as the Nueva Vizcaya State Institute of Technology (NVSIT) and Nueva Vizcaya State Polytechnic College (NVSPC).
+
+                  </p>
+                  <p>
+                    The former campuses were the two biggest state-run colleges in the province of Nueva Vizcaya. The NVSIT has a total area of 148.5 hectares situated at the foot of the scenic Bangan Hill in Bayombong, the capital town of the province. The NVSPC campus, on the other hand, has an area of 14.21 hectares in Bambang, the center for trade and commerce of the province.
+                  </p>
+
                   <ul>
-                    <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</li>
-                    <li>Saepe a minima quod iste libero rerum dicta!</li>
-                    <li>Voluptas obcaecati, iste porro fugit soluta consequuntur. Veritatis?</li>
-                    <li>Ipsam deserunt numquam ad error rem unde, omnis.</li>
-                    <li>Repellat assumenda adipisci pariatur ipsam eos similique, explicabo.</li>
+                    <li>
+                      <a href="http://www.nvsu.edu.ph/personnel/faculty-staff/faculty-directory.php">Our Faculty</a>
+                    </li>
+                    <li>
+                      <a href="http://www.nvsu.edu.ph/academics/university-colleges/bayombong-campus.php">Our Colleges</a>
+                    </li>
+                    <li>
+                      <a href="http://www.nvsu.edu.ph/offices/">Our Offices</a>
+                    </li>
+                    <li>
+                      <a href="http://www.nvsu.edu.ph/academics/university-facilities/index.php">Our Facilities</a>
+                    </li>
+                    <li>
+                      <a href="http://www.nvsu.edu.ph/university-news-archive.php">Our News Archives</a>
+                    </li>                    
                   </ul>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis quaerat harum facilis excepturi et? Mollitia!</p>
+
                 </div>
               </div>
               <div class="col-lg-6 col-md-6">
@@ -176,8 +196,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis, delen
           <div class="mu-latest-courses-area">
             <!-- Start Title -->
             <div class="mu-title">
-              <h2>Courses</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio ipsa ea maxime mollitia, vitae voluptates, quod at, saepe reprehenderit totam aliquam architecto fugiat sunt animi!</p>
+              <h2>Available Courses</h2>
             </div>
             <!-- End Title -->
             <!-- Start latest course content -->
@@ -200,7 +219,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima officiis, delen
                       <?= mb_strimwidth($currentCourse->course_description,0,100,'...')  ?>
                     </p>
                     <div class="mu-latest-course-single-contbottom">
-                      <a class="mu-course-details" href="#">Units</a>
+                      <strong class="mu-course-details" href="#">Units</strong>
                       <span class="mu-course-price" href="#">
                         <?= Html::encode($currentCourse->course_unit); ?>
                       </span>

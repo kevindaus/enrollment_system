@@ -17,6 +17,7 @@ use app\models\StudentCourse;
 use app\models\TertiaryEducationalAttaintment;
 use app\models\VocationalEducationalAttaintment;
 use Yii;
+use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
 use \app\models\StudentInformation;
@@ -77,23 +78,34 @@ class EnrollController extends Controller
                 /* prepare and save student picture*/
                 $uploadedProfilePicture = UploadedFile::getInstance($newStudent, 'student_picture');
                 if($uploadedProfilePicture){
-                    $newStudent->student_picture = $uploadedProfilePicture;
-                    $newStudent->saveStudentPicture($newStudent->student_picture);
-                }
+//                    $newStudent->student_picture = $uploadedProfilePicture;
+                    $newStudent->saveStudentPicture($uploadedProfilePicture);
+                } else if (isset($_POST['webcam_photo']) && !empty($_POST['webcam_photo'])) {
+                    /*create new FileUpload object*/
+                    $tempFileContainer = tempnam(sys_get_temp_dir(), 'container');
+                    file_put_contents($tempFileContainer, $_POST['webcam_photo']);
+                    $uploadedProfilePicture = new UploadedFile();
+                    $uploadedProfilePicture->tempName = realpath($tempFileContainer);
+                    $uploadedProfilePicture->name = basename($tempFileContainer);
+                    $uploadedProfilePicture->type = FileHelper::getMimeType($tempFileContainer);
+                    $uploadedProfilePicture->size = filesize($tempFileContainer);
+//                    $newStudent->student_picture = $uploadedProfilePicture;
+                    $newStudent->saveStudentPicture($uploadedProfilePicture);
+               }
+
                 /* prepare and save certificate requirement */
-                $studentRequirementCert = UploadedFile::getInstance($newStudent, 'requirement_certificate');
+                $studentRequirementCert = UploadedFile::getInstances($newStudent, 'requirement_certificate');
                 if($studentRequirementCert){
-                    $newStudent->requirement_certificate = $studentRequirementCert;
-                    $newStudent->saveStudentCeritificateRequirement($newStudent->requirement_certificate);
+                    $newStudent->saveStudentCeritificateRequirement($studentRequirementCert);
                 }
 
                 if ($newStudent->validate()) {
                     /*save in the database and generate serial number*/
                     $newStudent->save();
                     //attach event handlers
-                    $newStudent->on(StudentInformation::NEW_STUDENT_REGISTERED, [new NewEnrolleeRegisteredEventHandler(), 'handle'], $newStudent);
-                    $newStudent->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
-
+                    /*change of requirement only trigger the event if student is verified/approved by admin*/
+//                    $newStudent->on(StudentInformation::NEW_STUDENT_REGISTERED, [new NewEnrolleeRegisteredEventHandler(), 'handle'], $newStudent);
+//                    $newStudent->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
 
                     /*save student educational attainment*/
                     if ($elementaryEducationalAttainment->load(Yii::$app->request->post()) && $elementaryEducationalAttainment->save()) {

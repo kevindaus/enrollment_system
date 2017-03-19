@@ -15,11 +15,18 @@ $this->registerJsFile('/assets/js/waypoints.js', ['depends' => [\yii\web\JqueryA
 $this->registerJsFile('/assets/js/jquery.counterup.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('/assets/js/jquery.counterup.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('/assets/js/custom.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
+
 AppAsset::register($this);
 
 $customCss = <<< SCRIPT
   #main-content {
     min-height: 550px;
+  }
+  #mu-menu > nav > div > div > a > span {
+    font-size: 22px;
+    position: relative;
+    top: -5px;
   }
 SCRIPT;
 $this->registerCss($customCss);

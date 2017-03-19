@@ -2,7 +2,7 @@
 
 use yii\widgets\ListView;
 
-$this->params['breadcrumbs'][] = "Enrollment Form";
+$this->params['breadcrumbs'][] = "Application Form";
 
 $customCss = <<< SCRIPT
 	.mu-single-sidebar {
@@ -33,7 +33,7 @@ $this->registerCss($customCss);
 					<?= Yii::$app->session->getFlash('success') ?>
 				</div>
 				<?php endif ?>
-				<h1>Enrollment Form</h1>
+				<h1>Application Form</h1>
 			<hr>
 				<?= 
 					$this->render('_form', compact(

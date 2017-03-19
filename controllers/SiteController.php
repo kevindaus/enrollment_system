@@ -5,12 +5,16 @@ namespace app\controllers;
 use app\models\form\StudentLoginForm;
 use app\models\StudentInformation;
 use Yii;
+use yii\base\Exception;
 use yii\filters\AccessControl;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use yii\web\Cookie;
+use yii\web\Response;
+use yii\web\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -67,6 +71,7 @@ class SiteController extends Controller
         $signedUpStudents = \app\models\StudentInformation::find()->count();
         return $this->render('index',compact('numberOfCourses','signedUpStudents','availableCourses'));
     }
+
 
     public function actionLogin()
     {

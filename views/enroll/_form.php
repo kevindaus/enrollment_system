@@ -5,16 +5,14 @@
 /* @var $allAchievements array */
 
 
+use app\components\EnglishWebcamShoot;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use kartik\date\DatePicker;
-use yii\helpers\ArrayHelper;
-use app\models\Course;
 use kartik\widgets\Select2;
 use kartik\tabs\TabsX;
-use yii\helpers\Url;
 use kartik\widgets\TypeaheadBasic;
-
 use kartik\file\FileInput;
 
 
@@ -30,6 +28,18 @@ use kartik\file\FileInput;
         }
     }
 </script>
+<style type="text/css">
+    #profilePictureContainer {
+        background: lightgray;
+        /*color: white;*/
+        padding: 20px;
+        border-radius: 14px;
+        border: 5px dotted lightgray;
+        margin-right: 0;
+        margin-left: 0;
+    }    
+</style>
+
 <div class="enrollment-form">
 <?php
         $form = ActiveForm::begin([
@@ -55,18 +65,49 @@ use kartik\file\FileInput;
     </div>
     <div class="panel-body">
         <label>Student Picture</label>
-        <?=
-        FileInput::widget([
-            'model' => $newStudent,
-            'attribute' => 'student_picture',
-        ]);
-        ?>
-        <hr>
-        <label>Transcsript of Record or ALS certificate</label>
+   
+        <div class="row" id="profilePictureContainer">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="hint">
+                    Take a picture from your webcam
+                </div>
+                <img class="webcam_photo_mirror_copy">
+                <?php
+                    echo EnglishWebcamShoot::widget([
+                        'targetInputID' => 'webcam_photo',
+                        'targetImgClass' => 'webcam_photo_mirror_copy',
+                    ]);
+                ?>
+                <input type="hidden" name="webcam_photo" value="" id="webcam_photo">
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="hint">
+                    Or upload manually if you dont have web cam
+                </div>
+                <?=
+                    FileInput::widget([
+                        'model' => $newStudent,
+                        'attribute' => 'student_picture',
+                        'options'=>[
+                            'class'=>'webcam_photo'
+                        ]
+                    ]);
+                ?>
+            </div>
+        </div>        
+        <hr/>
+        <label>
+            Transcsript of Record or ALS certificate 
+        </label>
+        <small>(maximum of 5 files)</small>
         <?=
         FileInput::widget([
             'model' => $newStudent,
             'attribute' => 'requirement_certificate',
+            'options' => ['multiple' => true],
+            'pluginOptions' => [
+                'maxFileCount' => 5
+            ]
         ]);
         ?>
     </div>
@@ -158,12 +199,6 @@ use kartik\file\FileInput;
         $form
             ->field($newStudent, 'place_of_birth')
             ->label("Place of birth(Town,Province)")
-            ->textInput();
-        ?>
-        <?=
-        $form
-            ->field($newStudent, 'age')
-            ->label("Age")
             ->textInput();
         ?>
         <?=

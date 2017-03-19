@@ -22,7 +22,7 @@ use kartik\widgets\ActiveForm;
 							  	Menu::widget([
 							  	    'items' => [
 							  	        ['label' => '<i class="glyphicon glyphicon-home"></i> Dashboard', 'url' => ['/dashboard']],
-							  	        ['label' => '<i class="glyphicon glyphicon-user"></i> Enrolee', 'url' => ['/dashboard/enrollee']],
+							  	        ['label' => '<i class="glyphicon glyphicon-user"></i> Apply', 'url' => ['/dashboard/enrollee']],
 							  	        ['label' => '<i class="glyphicon glyphicon-book"></i> Course', 'url' => ['/course']],
 							  	    ],
 							  		'activeCssClass'=>'activeclass',

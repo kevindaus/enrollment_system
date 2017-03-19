@@ -7,6 +7,6 @@ return [
     'university_name' => 'Nueva Vizcaya  State University',
     'adminEmail' => 'admin@nvsu.edu.ph',
     'max_allowed_student_test_center' => 50,
-    'number_of_teachers'=>250,
-    'number_of_lab'=>250,
+    'number_of_teachers'=>32,
+    'number_of_lab'=>4,
 ];

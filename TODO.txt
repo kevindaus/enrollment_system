@@ -164,3 +164,41 @@ at 1 hhours 30 minutes
 @TODo 
 fix the calendar 
 make sure to include time too
+@DONE
+
+
+
+=
+
+
+
+@TODO  - change
+Lorem Ipsum na nasa homepage ehh dapat daw po yung totoong info na ilagay. hehe
+@DONE
+
+
+
+@TODO - NVSU ENTRANCE EXAM APPLICATION SYSTEM 
+@DONE
+
+@TODO - Home page  change to 
+Welcome to Nueva Vizcaya State University Online Application for College Entrance Examination
+@DONE
+
+@TODO
+Home Page
+Change Enroll Now to Apply Now
+@DONE
+
+@TODO - Breadcrumb to Application form
+@DONE
+
+@TODO - page Title to application form
+@DONE
+
+
+
+@TODO - 
+Tsaka po yung DASHBOARD sir. Ang gusto nila ehh ilabas nalang daw po yun ng ADMIN PAGE. Para makita ng mga estudyante.
+
+@TODO -Tas pagtapos magsubmit ng estudyante magpepending muna daw ito. Kelangan muna daw ma approve ng admin bago ito bigyan ng schedule ng exam.
