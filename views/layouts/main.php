@@ -24,7 +24,7 @@ $customCss = <<< SCRIPT
     min-height: 550px;
   }
   #mu-menu > nav > div > div > a > span {
-    font-size: 22px;
+    font-size: 18px;
     position: relative;
     top: -5px;
   }

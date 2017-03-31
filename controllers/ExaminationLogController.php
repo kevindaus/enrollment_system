@@ -29,7 +29,19 @@ class ExaminationLogController extends Controller
             ],        
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index','create','view','admin','update','delete','json'],
+                'only' => ['index','create','view','admin','update','delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['json'],
+                        'users' => ['*'],
+                    ],
+
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index','create','view','admin','update','delete'],
                 'rules' => [
                     [
                         'allow' => true,

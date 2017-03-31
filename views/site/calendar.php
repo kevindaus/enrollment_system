@@ -1,22 +1,16 @@
-<?php
-/**
- * @var $testScheduleCollection mixed
- */
-/* @var $this yii\web\View */
-
+<?php 
 use yii\helpers\Url;
 
-$this->registerCss('
-    .fc-title {
-        cursor: pointer !important;
-    }
-    .fc-day-grid-event .fc-time {
-    	display: none;
-    }
-')
-
-
 ?>
+<style type="text/css">
+	span.fc-time {
+		display: none;
+	}
+	#w0 > div.fc-view-container > div > table > tbody > tr > td > div > div > div:nth-child(2) > div.fc-content-skeleton > table > tbody > tr > td:nth-child(2) > a > div {
+		cursor: pointer!important;
+	}
+</style>
+
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 	<div class="panel panel-info">
 		<div class="panel-heading">

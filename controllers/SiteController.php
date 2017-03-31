@@ -48,16 +48,9 @@ class SiteController extends Controller
             ],
         ];
     }
-    public function actionTemplate()
+    public function actionCalendar()
     {
-        /**
-         * @var $testStudent StudentInformation
-         */
-        $testStudent = StudentInformation::find()->one();
-        $pdfTemplate = Yii::getAlias("@app/template_docs".DIRECTORY_SEPARATOR .'College Admission Examinaion Permit.pdf');
-        $exportedFilePath = $testStudent->exportTestingPermit($pdfTemplate);
-        /*@TODO */
-//        Yii::$app->response->xSendFile($exportedFilePath);
+        return $this->render('calendar');
     }
     public function actionReminder()
     {

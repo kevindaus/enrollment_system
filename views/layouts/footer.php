@@ -71,7 +71,8 @@ use yii\helpers\Html;
             <?php if (Yii::$app->user->isGuest): ?>
                | <?= Html::a('Admin Area', '/login'); ?>
             <?php endif ?>
-            
+            | <?= Html::a('Reminder', '/reminder'); ?>
+
           </p>
         </div>
       </div>
