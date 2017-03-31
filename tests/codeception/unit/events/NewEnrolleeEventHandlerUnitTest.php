@@ -2,7 +2,7 @@
 namespace tests\codeception\unit\events;
 
 use _generated\UnitTesterActions;
-use app\models\events\NewEnrolleeRegisteredEventHandler;
+use app\models\events\ScheduleExaminationEventHandler;
 use app\models\ExaminationLog;
 use app\models\StudentInformation;
 use Codeception\Specify;
@@ -44,9 +44,9 @@ class NewEnrolleeEventHandlerUnitTest extends \Codeception\TestCase\Test
                 $newstudent->citizenship = 'Filipino';
                 $newstudent->age = 23;
                 //attach event handlers
-                $newstudent->on(StudentInformation::NEW_STUDENT_REGISTERED, [new NewEnrolleeRegisteredEventHandler(), 'handle'], $newstudent);
+                $newstudent->on(StudentInformation::SCHEDULE_FOR_EXAMINATION, [new ScheduleExaminationEventHandler(), 'handle'], $newstudent);
                 $this->tester->assertTrue($newstudent->save(), 'We should successfully insert new record');
-                $newstudent->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
+                $newstudent->trigger(StudentInformation::SCHEDULE_FOR_EXAMINATION);
                 /*save in the database and generate serial number*/
                 if($currentNum === 1){
                     $firstExamLog = ExaminationLog::find()->orderBy(['id'=>SORT_ASC])->one();
@@ -87,10 +87,10 @@ class NewEnrolleeEventHandlerUnitTest extends \Codeception\TestCase\Test
                 $newstudent->citizenship = 'Filipino';
                 $newstudent->age = 23;
                 //attach event handlers
-                $newstudent->on(StudentInformation::NEW_STUDENT_REGISTERED, [new NewEnrolleeRegisteredEventHandler(), 'handle'], $newstudent);
+                $newstudent->on(StudentInformation::SCHEDULE_FOR_EXAMINATION, [new ScheduleExaminationEventHandler(), 'handle'], $newstudent);
                 /*save in the database and generate serial number*/
                 $this->tester->assertTrue($newstudent->save(), 'We should successfully insert new record');
-                $newstudent->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
+                $newstudent->trigger(StudentInformation::SCHEDULE_FOR_EXAMINATION);
                 if($currentNum == 1){
                     $this->tester->assertEquals(51 , StudentInformation::find()->count(),'There should be 51 student records in the database');
                     $this->tester->assertEquals(51 , ExaminationLog::find()->count(),'There should be 51 logs in the examination record');
@@ -147,9 +147,9 @@ class NewEnrolleeEventHandlerUnitTest extends \Codeception\TestCase\Test
                 $newstudent->citizenship = 'Filipino';
                 $newstudent->age = 23;
                 //attach event handlers
-                $newstudent->on(StudentInformation::NEW_STUDENT_REGISTERED, [new NewEnrolleeRegisteredEventHandler(), 'handle'], $newstudent);
+                $newstudent->on(StudentInformation::SCHEDULE_FOR_EXAMINATION, [new ScheduleExaminationEventHandler(), 'handle'], $newstudent);
                 $this->tester->assertTrue($newstudent->save(), 'We should successfully insert new record');
-                $newstudent->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
+                $newstudent->trigger(StudentInformation::SCHEDULE_FOR_EXAMINATION);
                 /*save in the database and generate serial number*/
             }
             $this->tester->assertNotEquals(0, StudentInformation::find()->count(),'There should be student records in the database');
@@ -180,9 +180,9 @@ class NewEnrolleeEventHandlerUnitTest extends \Codeception\TestCase\Test
         $newstudent->citizenship = 'Filipino';
         $newstudent->age = 23;
         //attach event handlers
-        $newstudent->on(StudentInformation::NEW_STUDENT_REGISTERED, [new NewEnrolleeRegisteredEventHandler(), 'handle'], $newstudent);
+        $newstudent->on(StudentInformation::SCHEDULE_FOR_EXAMINATION, [new ScheduleExaminationEventHandler(), 'handle'], $newstudent);
         $this->tester->assertTrue($newstudent->save(), 'We should successfully insert new record');
-        $newstudent->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
+        $newstudent->trigger(StudentInformation::SCHEDULE_FOR_EXAMINATION);
 
         /*test examination date is not less than today */
         $lastExamLog = ExaminationLog::find()->orderBy(['id'=>SORT_DESC])->one();

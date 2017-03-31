@@ -27,7 +27,7 @@ $this->registerCss($customCss);
 
 			<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
 
-				<?php if (Yii::$app->session->hasFlash("success")): ?>				
+				<?php if (Yii::$app->session->hasFlash("examination_date_set_success")): ?>				
 				<div class="alert alert-success">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 					<?= Yii::$app->session->getFlash('success') ?>

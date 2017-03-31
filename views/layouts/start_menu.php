@@ -7,7 +7,7 @@ use app\assets\AppAsset;
 
 $navItems = [
   ['label' => 'Home', 'url' => ['/site/index']],
-  ['label' => 'Enroll', 'url' => ['/enroll']],
+  ['label' => 'Apply', 'url' => ['/enroll']],
   ['label' => 'Reminder', 'url' => ['/reminder']],
   ['label' => 'Dashboard', 'url' => ['/dashboard'] , 'visible'=> \Yii::$app->user->can('admin') ]
 ];

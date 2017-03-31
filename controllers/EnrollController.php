@@ -10,7 +10,7 @@ namespace app\controllers;
 
 use app\models\AwardsReceived;
 use app\models\ElementaryEducationalAttaintment;
-use app\models\events\NewEnrolleeRegisteredEventHandler;
+use app\models\events\ScheduleExaminationEventHandler;
 use app\models\PreferredCourseForm;
 use app\models\SecondaryEducationalAttaintment;
 use app\models\StudentCourse;
@@ -29,6 +29,14 @@ use yii\web\UploadedFile;
 
 class EnrollController extends Controller
 {
+     public function actions()
+     {
+         return [
+             'captcha' => [
+                 'class' => 'yii\captcha\CaptchaAction',
+             ],
+         ];
+     }
     private function transformToSelectDatasource($arr)
     {
         $tempContainer = [];
@@ -48,6 +56,7 @@ class EnrollController extends Controller
         if (!isset($newStudent->citizenship)) {
             $newStudent->citizenship = "Filipino";
         }
+        $newStudent->application_form_status = StudentInformation::APPLICATION_FORM_STATUS_PENDING;
         $allAchievements = AwardsReceived::getAllAchievements();
         $allAvailableCourses = Course::getAllAvailableCourses();
 
@@ -78,19 +87,23 @@ class EnrollController extends Controller
                 /* prepare and save student picture*/
                 $uploadedProfilePicture = UploadedFile::getInstance($newStudent, 'student_picture');
                 if($uploadedProfilePicture){
-//                    $newStudent->student_picture = $uploadedProfilePicture;
                     $newStudent->saveStudentPicture($uploadedProfilePicture);
                 } else if (isset($_POST['webcam_photo']) && !empty($_POST['webcam_photo'])) {
                     /*create new FileUpload object*/
-                    $tempFileContainer = tempnam(sys_get_temp_dir(), 'container');
-                    file_put_contents($tempFileContainer, $_POST['webcam_photo']);
-                    $uploadedProfilePicture = new UploadedFile();
-                    $uploadedProfilePicture->tempName = realpath($tempFileContainer);
-                    $uploadedProfilePicture->name = basename($tempFileContainer);
-                    $uploadedProfilePicture->type = FileHelper::getMimeType($tempFileContainer);
-                    $uploadedProfilePicture->size = filesize($tempFileContainer);
-//                    $newStudent->student_picture = $uploadedProfilePicture;
-                    $newStudent->saveStudentPicture($uploadedProfilePicture);
+
+                    $rawImg = str_replace('data:image/png;base64,', '', $_POST['webcam_photo']);
+                    $rawImg = str_replace(' ', '+', $rawImg);
+                    $imgData = base64_decode($rawImg);
+
+                    // $tempFileContainer = tempnam(sys_get_temp_dir(), $newStudent->firstName);
+
+                    /*create a file in the output folder*/
+                    $uploadedImagesPath = Yii::getAlias('@app/uploads/student_pictures');
+                    $finalImagename = sprintf("%s_%s_%s_%s_%s_%s.%s", date("Y_m_d"), $newStudent->title, $newStudent->firstName, $newStudent->middleName, $newStudent->lastName, uniqid(),'.png');
+                    /*write the contents to the image file*/
+                    file_put_contents($uploadedImagesPath . DIRECTORY_SEPARATOR . $finalImagename, $imgData);
+                    /*set the filename to student_picture */
+                    $newStudent->student_picture = $finalImagename;
                }
 
                 /* prepare and save certificate requirement */
@@ -101,12 +114,7 @@ class EnrollController extends Controller
 
                 if ($newStudent->validate()) {
                     /*save in the database and generate serial number*/
-                    $newStudent->save();
-                    //attach event handlers
-                    /*change of requirement only trigger the event if student is verified/approved by admin*/
-//                    $newStudent->on(StudentInformation::NEW_STUDENT_REGISTERED, [new NewEnrolleeRegisteredEventHandler(), 'handle'], $newStudent);
-//                    $newStudent->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
-
+                    $newStudent->save(false);
                     /*save student educational attainment*/
                     if ($elementaryEducationalAttainment->load(Yii::$app->request->post()) && $elementaryEducationalAttainment->save()) {
                         $elementaryEducationalAttainment->student_id = $newStudent->id;

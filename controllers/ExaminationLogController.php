@@ -52,7 +52,7 @@ class ExaminationLogController extends Controller
     public function actionJson($start,$end)
     {
         \Yii::$app->response->format = Response::FORMAT_JSON;
-            $testScheduleDataProvider = new TestScheduleDataProvider();
+        $testScheduleDataProvider = new TestScheduleDataProvider();
         $testScheduleDataProvider->start = \DateTime::createFromFormat("Y-m-d", $start);
         $testScheduleDataProvider->start->setTime(8, 0, 0);
         $testScheduleDataProvider->end = \DateTime::createFromFormat("Y-m-d", $end);

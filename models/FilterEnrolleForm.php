@@ -20,6 +20,7 @@ class FilterEnrolleForm  extends Model{
     public $civil_status;
     public $course;
     public $school_graduated;
+    public $application_form_status;
     public $award;
     /**
      * @return array the validation rules.
@@ -27,13 +28,14 @@ class FilterEnrolleForm  extends Model{
     public function rules()
     {
         return [
-            [['name' ,'serial_number','gender' ,'address' ,'ethnic_origin','civil_status' ,'age' ,'course','school_graduated','award'], 'safe'],
+            [['name' ,'serial_number','gender' ,'address' ,'ethnic_origin','civil_status' ,'age' ,'course','school_graduated','award','application_form_status'], 'safe'],
         ];
     }
     public function attributeLabels()
     {
         return [
-            'serial_number'=>'Identification Number'
+            'serial_number'=>'Identification Number',
+            'application_form_status'=>'Application Form'
         ];
     }
 
@@ -50,6 +52,9 @@ class FilterEnrolleForm  extends Model{
         }
         if (isset($this->gender) && !empty($this->gender)) {
             $query->andWhere(['gender' => $this->gender]);
+        }
+        if (isset($this->application_form_status) && !empty($this->application_form_status)) {
+            $query->andWhere(['application_form_status' => $this->application_form_status]);
         }
         if (isset($this->serial_number) && !empty($this->serial_number)) {
             $query->andWhere(['serial_number' => $this->serial_number]);

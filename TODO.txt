@@ -49,11 +49,9 @@ http://localhost:8080/student-login
 @TODO - after login , allow user to view his/her schedule
 
 
-
-
 @TODO - assign student a schedule for
 entrance exam test
-
+@DONE
 
 
 
@@ -196,9 +194,78 @@ Change Enroll Now to Apply Now
 @TODO - page Title to application form
 @DONE
 
-
+@TODO  - number of maximum number of
+Transcsript of Record or ALS certificate
+should be 5
+@DONE
 
 @TODO - 
 Tsaka po yung DASHBOARD sir. Ang gusto nila ehh ilabas nalang daw po yun ng ADMIN PAGE. Para makita ng mga estudyante.
 
 @TODO -Tas pagtapos magsubmit ng estudyante magpepending muna daw ito. Kelangan muna daw ma approve ng admin bago ito bigyan ng schedule ng exam.
+@DONE
+
+@TODO -
+at new column student_status : string : [PENDING , VALIDATED]
+@DONE
+
+@TODO - dashboard show student status
+@DONE
+
+
+
+@TODO - age is automatically 
+calculated and should not
+come from input
+@DONE
+
+
+
+
+@TODO -
+profile picture capture from webcam
+--
+after capture from webcam 
+save the profile picture and show it to 
+the form 
+@DONE
+@BUG - shows .tmp file type extension, 
+@FIXED
+
+
+
+@TODO - schedule only when approved
+$newStudent->on(StudentInformation::NEW_STUDENT_REGISTERED, [new NewEnrolleeRegisteredEventHandler(), 'handle'], $newStudent);
+$newStudent->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
+@DONE
+
+
+@TODO - show print permit if examination date is present else , hide it
+@DONE
+
+
+@TODO -
+Tas dun po sa SEARCH. 
+Kung pwede daw na pati name ng estudyante ang ilagay. 
+search by fullname
+@DONE
+
+@TODO - add recaptcha
+Recaptcha before submission
+@DONE
+
+@BUG - student picture and certificates
+not saving to upload directory
+@DONE
+
+
+
+
+
+@BUG
+FileInput not uploading multiple files
+
+$uploadedImagesPath = Yii::getAlias('@app/uploads/certificates');
+$certImageArr = explode(",", $enrolleeModel->requirement_certificate)
+$certImage = base64_encode(  file_get_contents($uploadedImagesPath . DIRECTORY_SEPARATOR . $enrolleeModel->requirement_certificate) );
+@DONE

@@ -10,6 +10,9 @@ $this->registerCss('
     .fc-title {
         cursor: pointer !important;
     }
+    .fc-day-grid-event .fc-time {
+    	display: none;
+    }
 ')
 
 

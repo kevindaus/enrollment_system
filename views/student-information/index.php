@@ -25,11 +25,12 @@ use yii\helpers\Html;
 				<h3 class="panel-title">Schedule</h3>
 			</div>
 			<div class="panel-body">
-				<h1>
+				<h1 class="text-center">
 					Examination Date - <?= $examinationDate ?>
 				</h1>
-
-				<?= Html::a("<span class='glyphicon glyphicon-print' aria-hidden='true'></span>"." Print Permit", '/student-information/'.$studentModel->serial_number.'/print', ['class' => 'btn btn-primary btn-block','style'=>'font-size: 30px']); ?>
+				<?php if ($examinationDate !== 'Not Set'): ?>
+					<?= Html::a("<span class='glyphicon glyphicon-print' aria-hidden='true'></span>"." Print Permit", '/student-information/'.$studentModel->serial_number.'/print', ['class' => 'btn btn-primary btn-block','style'=>'font-size: 30px']); ?>			
+				<?php endif ?>
 			</div>
 		</div>
 		<div class="panel panel-info">
@@ -43,7 +44,7 @@ use yii\helpers\Html;
                     'attributes' => [
                         'id',
                         [
-                            'label' => 'Date taken',
+                            'label' => 'Date of Application',
                             'value' => \Yii::$app->formatter->asDate($studentModel->date_taken, 'long')
                         ],
                         'application_status',
@@ -62,7 +63,7 @@ use yii\helpers\Html;
                             'label' => 'Birthday',
                             'value' => \Yii::$app->formatter->asDate($studentModel->birthday, 'long')
                         ],
-                        'age', //must be calculated
+
 						'permanent_address_house_number',
 						'permanent_address_street',
 						'permanent_address_purok',

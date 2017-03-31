@@ -23,7 +23,7 @@ use yii\widgets\Menu;
                     Menu::widget([
                         'items' => [
                             ['label' => '<i class="glyphicon glyphicon-home"></i> Dashboard', 'url' => ['/dashboard']],
-                            ['label' => '<i class="glyphicon glyphicon-user"></i> Enrolee', 'url' => ['/dashboard/enrollee']],
+                            ['label' => '<i class="glyphicon glyphicon-user"></i> Applicants', 'url' => ['/applicants']],
                         ],
                         'activeCssClass'=>'activeclass',
                         'encodeLabels'=>false,
@@ -110,12 +110,6 @@ use yii\widgets\Menu;
                         ->label("Place of birth(Town,Province)")
                         ->textInput(); 
                     ?>                
-                    <?= 
-                    $form
-                        ->field($enrolleeObj, 'age')
-                        ->label("Age")
-                        ->textInput(); 
-                    ?>
                     <?= 
                         $form
                         ->field($enrolleeObj, 'civil_status')

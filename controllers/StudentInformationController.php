@@ -18,7 +18,7 @@ class StudentInformationController extends \yii\web\Controller
             //get the examination date of current student
             $examinationDate = ExaminationLog::find()->where(['student_id' => $studentModel->id])->one();
             if($examinationDate){
-                $examinationDate = Yii::$app->formatter->asDate($examinationDate->examination_date);
+                $examinationDate = Yii::$app->formatter->asDateTime(strtotime($examinationDate->examination_date));
             }else{
                 $examinationDate = "Not Set";
             }
@@ -34,6 +34,8 @@ class StudentInformationController extends \yii\web\Controller
             if ($studentLoginForm->loginStudent()) {
                 $foundStudentModel = $studentLoginForm->getStudentModel();
                 $this->redirect('/student-information/'.$foundStudentModel->serial_number);
+            } else {
+                Yii::$app->session->setFlash('login_error', 'Record doesnt exists in the database');
             }
         }
     	return $this->render('login',compact('studentLoginForm'));

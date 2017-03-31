@@ -8,11 +8,14 @@ use yii\widgets\Menu;
 /* @var $currentAward \app\models\AwardsReceived */
 /* @var $currrentEducationalAttainment \app\models\EducationalAttainment  */
 
+
 $uploadedImagesPath = Yii::getAlias('@app/uploads/student_pictures');
 $studentImage = base64_encode(  file_get_contents($uploadedImagesPath . DIRECTORY_SEPARATOR . $enrolleeModel->student_picture) );
 
+
 $uploadedImagesPath = Yii::getAlias('@app/uploads/certificates');
-$certImage = base64_encode(  file_get_contents($uploadedImagesPath . DIRECTORY_SEPARATOR . $enrolleeModel->requirement_certificate) );
+$certImageArr = explode(",", $enrolleeModel->requirement_certificate)
+
 
 ?>
 <div class="row" style='padding: 20px;'>
@@ -82,7 +85,6 @@ $certImage = base64_encode(  file_get_contents($uploadedImagesPath . DIRECTORY_S
                             'label' => 'Birthday',
                             'value' => \Yii::$app->formatter->asDate($enrolleeModel->birthday, 'long')
                         ],
-                        'age', //must be calculated
                         'place_of_birth',
                         'civil_status',
                         'gender',
@@ -191,7 +193,13 @@ $certImage = base64_encode(  file_get_contents($uploadedImagesPath . DIRECTORY_S
                 <img src="data:image/jpeg;base64,<?= $studentImage ?>" class='img-responsive' style='height: 150px'>
                 <hr>
                 <h2>Certificate Requirement</h2>
-                <img src="data:image/jpeg;base64,<?= $certImage ?>" class='img-responsive' style='height: 150px'>
+                <?php foreach ($certImageArr as $currentCertImage): ?>
+                    <?php
+
+                        $currentCertImage = base64_encode(  file_get_contents($uploadedImagesPath . DIRECTORY_SEPARATOR . $currentCertImage) );
+                    ?>
+                    <img src="data:image/jpeg;base64,<?= $currentCertImage ?>" class='img-responsive' style='height: 150px'>               
+                <?php endforeach ?>
             </div>
         </div>
 

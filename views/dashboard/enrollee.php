@@ -3,6 +3,7 @@
 /* @var $this yii\web\View */
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use kartik\widgets\TypeaheadBasic;
 use yii\widgets\Menu;
@@ -44,6 +45,16 @@ use yii\widgets\Menu;
 					<?php $form = ActiveForm::begin() ?>
 						<?= $form->field($filterForm, 'serial_number')->textInput() ?>
 						<?= $form->field($filterForm, 'name')->textInput() ?>
+
+                        <?=
+                        $form
+                            ->field($filterForm, 'application_form_status')
+                            ->dropDownList([
+                                \app\models\StudentInformation::APPLICATION_FORM_STATUS_APPROVED => 'APPROVED',
+                                \app\models\StudentInformation::APPLICATION_FORM_STATUS_PENDING => 'PENDING'
+                            ]);
+                        ?>
+
 						<?= $form->field($filterForm, 'gender')->dropDownList(["Male"=>"Male","Female"=>"Female"],['prompt'=>'Select gender']); ?>
 						<?= $form->field($filterForm, 'address')->textInput() ?>
 						<label>Ethnicity</label>
@@ -104,9 +115,30 @@ use yii\widgets\Menu;
 			</div>
 		</div>
 		<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+			<?php if (Yii::$app->session->hasFlash('examination_date_set_success')): ?>
+                <div class="alert alert-info">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <?= Yii::$app->session->getFlash('examination_date_set_success') ?>
+                </div>
+			<?php endif ?>
 			<?= GridView::widget([
 							'dataProvider' => $enroleeDataProvider,
 							'columns' => [
+                                [
+                                    'class' => 'yii\grid\ActionColumn',
+                                    'template' => '{view} {update}',
+                                    'buttons'=>[
+                                        'view'=> function ($url, $model, $key) {
+                                            return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', '/applicant/'.$model->id);
+                                        },
+                                        'update'=> function ($url, $model, $key) {
+                                            return Html::a('<span class="glyphicon glyphicon-pencil"></span>', '/applicant/update-personal-information/'.$model->id);
+                                        },
+                                        // 'delete'=> function ($url, $model, $key) {
+                                        //     return Html::a('<span class="glyphicon glyphicon-trash"></span>', '/applicant/update-personal-information/'.$model->id);
+                                        // },
+                                    ]
+                                ],
 								[
 									'value'=>function($model){
 										return sprintf("%s. %s %s %s" ,$model->title , $model->firstName,$model->middleName, $model->lastName);
@@ -115,20 +147,20 @@ use yii\widgets\Menu;
 								],
 								'serial_number',
 								'gender',
-								'civil_status',
-					            [
-					            	'class' => 'yii\grid\ActionColumn',
-					            	'buttons'=>[
-						            	'view'=> function ($url, $model, $key) {
-									        return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', '/enrollee/'.$model->id);
-									    },
-						            	'update'=> function ($url, $model, $key) {
-									        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', '/enrollee/update-personal-information/'.$model->id);
-									    },
-					            	]
+								'phoneNumber',
+                                [
+                                    'value'=>function($model){
+                                    		$retVal = '<p class="text-success"> <span class="glyphicon glyphicon-check"></span> APPROVED</p>';
+                                    		if ($model->application_form_status !== \app\models\StudentInformation::APPLICATION_FORM_STATUS_APPROVED) {
+                                    			$retVal = Html::a("approve", Url::to(["/applicant/approve",'id'=>$model->id]), ['class'=>'btn btn-primary btn-block']);
+                                    		}
+                                    		return $retVal;
+                                        },
+                                    'header'=>'',
+                                    'format'=>'html',
+                                ],
 
-					            ],
-							]
+                            ]
 						]);?>			
 		</div>
 	</div>

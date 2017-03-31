@@ -6,6 +6,7 @@
 
 
 use app\components\EnglishWebcamShoot;
+use yii\captcha\Captcha;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -78,7 +79,7 @@ use kartik\file\FileInput;
                         'targetImgClass' => 'webcam_photo_mirror_copy',
                     ]);
                 ?>
-                <input type="hidden" name="webcam_photo" value="" id="webcam_photo">
+                <input type="hidden" name="webcam_photo" value="<?= @$_POST['webcam_photo'] ?>" id="webcam_photo">
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <div class="hint">
@@ -103,8 +104,8 @@ use kartik\file\FileInput;
         <?=
         FileInput::widget([
             'model' => $newStudent,
-            'attribute' => 'requirement_certificate',
-            'options' => ['multiple' => true],
+            'attribute' => 'requirement_certificate[]',
+            'options' => ['multiple' => 'true'],
             'pluginOptions' => [
                 'maxFileCount' => 5
             ]
@@ -408,6 +409,9 @@ use kartik\file\FileInput;
 
     </div>
 </div>
+
+
+ <?= $form->field($newStudent, 'captcha')->widget(Captcha::className()) ?>
 
 
 <div class="form-group">

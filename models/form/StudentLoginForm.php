@@ -14,21 +14,39 @@ use yii\base\Model;
 
 class StudentLoginForm extends Model{
     public $serial_key;
+    public $firstName;
+    public $middleName;
+    public $lastName;
     protected $studentModel=null;
     public function rules(){
         return [
-            ['serial_key','required']
+            [['serial_key','firstName','middleName','lastName'],'safe']
         ];
     }
     public function attributeLabels()
     {
         return [
-            'serial_key'=>"Student Identification Number"
+            'serial_key'=>"Student Identification Number",
+            'firstName'=>"Firstname",
+            'middleName'=>"Middlename",
+            'lastName'=>"Lastname"
         ];
     }
     public function loginStudent()
     {
-        $this->studentModel = StudentInformation::find()->where(['serial_number'=>$this->serial_key])->one();
+        $searchCriteria = StudentInformation::find();
+        if (isset($this->serial_key) && !empty($this->serial_key)) {
+            //use serial for searching
+            $searchCriteria->where(['serial_number' => $this->serial_key]);
+        } else {
+          //use name
+            $searchCriteria->where([
+                'firstName'=> $this->firstName,
+                'middleName'=> $this->middleName,
+                'lastName'=> $this->lastName
+            ]);
+        }
+        $this->studentModel = $searchCriteria->one();
         return !!$this->studentModel;
     }
 

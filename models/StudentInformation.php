@@ -6,6 +6,7 @@ use FPDI;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\web\ForbiddenHttpException;
 use yii\web\UploadedFile;
 
 
@@ -49,12 +50,16 @@ use yii\web\UploadedFile;
  * @property string $student_picture
  * @property string $requirement_certificate
  * @property string $serial_number
+ * @property string $application_form_status
  * @property string $created_at
  * @property string $updated_at
  */
 class StudentInformation extends \yii\db\ActiveRecord
 {
-    const NEW_STUDENT_REGISTERED = 'NEW_STUDENT_REGISTERED';
+    const SCHEDULE_FOR_EXAMINATION = 'NEW_STUDENT_REGISTERED';
+    const APPLICATION_FORM_STATUS_PENDING = 'PENDING';
+    const APPLICATION_FORM_STATUS_APPROVED = 'APPROVED';
+     public $captcha;
 
     /**
      * @inheritdoc
@@ -122,11 +127,10 @@ EOL;
     public function rules()
     {
         return [
-            [['title', 'firstName', 'lastName', 'gender', 'civil_status', 'citizenship', 'requirement_certificate'], 'required'],
-            [['permanent_address_street','residential_address_street'], 'safe'],
-            [['requirement_certificate', 'student_picture', 'date_taken', 'birthday', 'created_at', 'updated_at', 'application_status', 'college_admission_test_number', 'official_receipt_number', 'is_first_time', 'is_first_time_location'], 'safe'],
+             [['title', 'firstName', 'lastName', 'gender', 'civil_status', 'citizenship', 'requirement_certificate','captcha'], 'required'],
+             [['captcha'],'captcha'],
+            [['permanent_address_street','residential_address_street','requirement_certificate', 'student_picture', 'date_taken', 'birthday', 'created_at', 'updated_at', 'application_status', 'college_admission_test_number', 'official_receipt_number', 'is_first_time', 'is_first_time_location','application_form_status','captcha'], 'safe'],
             [['serial_number', 'college_admission_test_number', 'official_receipt_number', 'application_status', 'is_first_time', 'is_first_time_location', 'title', 'firstName', 'middleName', 'lastName', 'phoneNumber', 'houseNumber', 'permanent_address_house_number', 'permanent_address_street', 'permanent_address_purok', 'permanent_address_barangay', 'permanent_address_town', 'permanent_address_province', 'permanent_address_postalCode', 'residential_address_house_number', 'residential_address_street', 'residential_address_purok', 'residential_address_barangay', 'residential_address_town', 'residential_address_province', 'residential_address_postalCode', 'place_of_birth', 'civil_status', 'gender', 'ethnic_origin', 'citizenship', 'signature_image'], 'string', 'max' => 255],
-
         ];
     }
 
@@ -139,8 +143,9 @@ EOL;
             'id' => 'ID',
             'college_admission_test_number' => 'College Admission Test Number',
             'official_receipt_number' => 'Official Receipt Number',
-            'date_taken' => 'Date Taken',
+            'date_taken' => 'Date of application',
             'application_status' => 'Application Status',
+            'requirement_certificate' => 'Transcsript of Record or ALS certificate',
             'is_first_time' => 'Is first time',
             'is_first_time_location' => 'Place NVSU-CAT took place',
             'title' => 'Title',
@@ -171,6 +176,7 @@ EOL;
             'citizenship' => 'Citizenship',
             'signature_image' => 'Signature Image',
             'serial_number' => 'Identification Number',
+            'application_form_status' => 'Applicantion Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -207,7 +213,7 @@ EOL;
     public function afterSave($insert, $changedAttributes)
     {
         if ($this->isNewRecord) {
-            $this->trigger(StudentInformation::NEW_STUDENT_REGISTERED);
+            $this->trigger(StudentInformation::SCHEDULE_FOR_EXAMINATION);
         }
         parent::afterSave($insert, $changedAttributes);
     }
@@ -290,6 +296,7 @@ EOL;
 
     /**
      * @param $pdfTemplate
+     * @throws \yii\web\ForbiddenHttpException
      * @return FPDI
      */
     public function exportTestingPermit($pdfTemplate){
@@ -307,7 +314,11 @@ EOL;
         $pdf->SetXY(  73 , 93.5);
         $pdf->Write(0, sprintf("%s %s %s  %s",$this->title,$this->firstName ,$this->middleName,$this->lastName));
         $pdf->SetXY(  103 , 98);
-        $pdf->Write(0, date("l jS \of F Y",time()). " 8:00 AM"  );//date
+        $examinationDate = ExaminationLog::find()->where(['student_id' => $this->id])->one();
+        if (!$examinationDate) {
+            throw new ForbiddenHttpException("Applicant :  {$this->firstName} {$this->middleName} {$this->lastName} is not yet verified");
+       }
+        $pdf->Write(0, Yii::$app->formatter->asDatetime( strtotime($examinationDate->examination_date)  )  );//date
         $pdf->SetXY(  35 , 106);
         $pdf->Write(0, 'Testing Center');//time
         return $pdf;
@@ -341,7 +352,7 @@ EOL;
             //rename photoname using format Y_m_d_title_firstname_middlename_lastname_serialNumber
             $finalImagename = sprintf("%s_%s_%s_%s_%s_%s.%s", date("Y_m_d"), $this->title, $this->firstName, $this->middleName, $this->lastName, uniqid(),$currentCertificateRequirement->extension);
             $currentCertificateRequirement->saveAs($uploadedImagesPath .DIRECTORY_SEPARATOR. $finalImagename);
-            $filesSaved[] = $uploadedImagesPath . DIRECTORY_SEPARATOR . $finalImagename;
+            $filesSaved[] = $finalImagename;
         }
         $this->requirement_certificate = implode(",",$filesSaved);
         return $filesSaved;

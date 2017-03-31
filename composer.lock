@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6b671835e4fc1ba9d09778293a1d1429",
-    "content-hash": "5a5d88e0a5d74f1278d28ad448f470f9",
+    "hash": "717985e93fc713ddcea216008e4b3dbe",
+    "content-hash": "87e467836ace79accd3c25ed3ff45738",
     "packages": [
         {
             "name": "2amigos/yii2-ckeditor-widget",
@@ -653,6 +653,54 @@
                 "fixtures"
             ],
             "time": "2017-03-17 17:56:19"
+        },
+        {
+            "name": "himiklab/yii2-recaptcha-widget",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/himiklab/yii2-recaptcha-widget.git",
+                "reference": "2d660628a10739ca823cdb2076cf6bdc63fd117c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/himiklab/yii2-recaptcha-widget/zipball/2d660628a10739ca823cdb2076cf6bdc63fd117c",
+                "reference": "2d660628a10739ca823cdb2076cf6bdc63fd117c",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "require-dev": {
+                "phpunit/dbunit": ">=1.2",
+                "phpunit/phpunit": ">=3.7",
+                "phpunit/phpunit-selenium": ">=1.2"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "himiklab\\yii2\\recaptcha\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "HimikLab",
+                    "homepage": "https://github.com/himiklab/"
+                }
+            ],
+            "description": "Yii2 Google reCAPTCHA widget",
+            "keywords": [
+                "captcha",
+                "google",
+                "recaptcha",
+                "widget",
+                "yii2"
+            ],
+            "time": "2017-03-06 12:00:16"
         },
         {
             "name": "hscstudio/yii2-chart",
